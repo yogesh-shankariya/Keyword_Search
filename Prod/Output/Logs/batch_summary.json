@@ -1,0 +1,24 @@
+{
+  "timestamp_utc": "2026-06-05T13:33:59.875711+00:00",
+  "ocr_root": "Input/OCR",
+  "keywords_json_file": "Input/Keywords/sample_provider_role_keywords_flattened.json",
+  "output_root": "Output",
+  "logs_root": "Output/Logs",
+  "duration_ms": 41.204,
+  "file_count": 1,
+  "success_count": 1,
+  "failed_count": 0,
+  "files": [
+    {
+      "file_id": "sample_ocr_encounters_input.json",
+      "input_path": "Input/OCR/sample_ocr_encounters_input.json",
+      "output_path": "Output/sample_ocr_encounters_input_keyword_output.json",
+      "log_path": "Output/Logs/sample_ocr_encounters_input.log",
+      "status": "success",
+      "duration_ms": 41.041,
+      "output_record_count": 9,
+      "matched_record_count": 9,
+      "total_match_count": 35
+    }
+  ]
+}

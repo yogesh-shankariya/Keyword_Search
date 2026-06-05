@@ -1,0 +1,205 @@
+[
+  {
+    "page_number": 1,
+    "encounter_id": "ENC_WRONG_ORDER_001",
+    "matches": [
+      {
+        "group": "legal_authenticator.Reviewer",
+        "variant": "Reviewer"
+      },
+      {
+        "group": "legal_authenticator.Attending",
+        "variant": "Attending"
+      },
+      {
+        "group": "legal_authenticator.Last reviewed by",
+        "variant": "Last reviewed by"
+      },
+      {
+        "group": "electronically_signed_provider.Electronically signed by",
+        "variant": "Electronically signed by"
+      },
+      {
+        "group": "electronically_signed_provider.Signature",
+        "variant": "Signature"
+      },
+      {
+        "group": "electronically_signed_provider.Physician",
+        "variant": "Physician"
+      },
+      {
+        "group": "electronically_signed_provider.Clinician Signature",
+        "variant": "Clinician Signature"
+      },
+      {
+        "group": "electronically_signed_provider.Attending Physician",
+        "variant": "Attending Physician"
+      }
+    ],
+    "file_path": "enc_wrong_order_001.txt"
+  },
+  {
+    "page_number": 2,
+    "encounter_id": "ENC_WRONG_ORDER_001",
+    "matches": [
+      {
+        "group": "legal_authenticator.Reviewer",
+        "variant": "Reviewer"
+      },
+      {
+        "group": "legal_authenticator.Authenticator",
+        "variant": "Authenticator"
+      },
+      {
+        "group": "legal_authenticator.Legal Authenticator",
+        "variant": "Legal Authenticator"
+      },
+      {
+        "group": "legal_authenticator.Last reviewed by",
+        "variant": "Last reviewed by"
+      },
+      {
+        "group": "electronically_signed_provider.Reported and Signed by",
+        "variant": "reported and Signed by"
+      }
+    ],
+    "file_path": "enc_wrong_order_001.txt"
+  },
+  {
+    "page_number": 3,
+    "encounter_id": "ENC_WRONG_ORDER_001",
+    "matches": [
+      {
+        "group": "legal_authenticator.Director",
+        "variant": "Director"
+      },
+      {
+        "group": "electronically_signed_provider.Signature",
+        "variant": "Signature"
+      }
+    ],
+    "file_path": "enc_wrong_order_001.txt"
+  },
+  {
+    "page_number": 10,
+    "encounter_id": "ENC_TYPO_AND_VARIATION_002",
+    "matches": [
+      {
+        "group": "legal_authenticator.Reviewer",
+        "variant": "Reviewer"
+      },
+      {
+        "group": "electronically_signed_provider.Digitally signed by",
+        "variant": "Digitally signed by"
+      },
+      {
+        "group": "electronically_signed_provider.Signature",
+        "variant": "Signature"
+      },
+      {
+        "group": "electronically_signed_provider.Agent Signature",
+        "variant": "Agent Signature"
+      },
+      {
+        "group": "electronically_signed_provider.Nurse's Signature",
+        "variant": "Nurse's Signature"
+      }
+    ],
+    "file_path": "enc_typo_and_variation_002.txt"
+  },
+  {
+    "page_number": 11,
+    "encounter_id": "ENC_TYPO_AND_VARIATION_002",
+    "matches": [
+      {
+        "group": "electronically_signed_provider.Visit note addendum added by",
+        "variant": "Visit note addendum added by"
+      },
+      {
+        "group": "electronically_signed_provider.Physician",
+        "variant": "Physician"
+      }
+    ],
+    "file_path": "enc_typo_and_variation_002.txt"
+  },
+  {
+    "page_number": 12,
+    "encounter_id": "ENC_TYPO_AND_VARIATION_002",
+    "matches": [
+      {
+        "group": "electronically_signed_provider.Electronically signed by",
+        "variant": "Electronically signed by"
+      },
+      {
+        "group": "electronically_signed_provider.Signature",
+        "variant": "Signature"
+      },
+      {
+        "group": "electronically_signed_provider.Physical Therapist",
+        "variant": "Physical Therapist"
+      },
+      {
+        "group": "electronically_signed_provider.Therapist Signature",
+        "variant": "Therapist Signature"
+      }
+    ],
+    "file_path": "enc_typo_and_variation_002.txt"
+  },
+  {
+    "page_number": 19,
+    "encounter_id": "ENC_NEGATIVE_AND_EDGE_003",
+    "matches": [
+      {
+        "group": "legal_authenticator.Reviewer",
+        "variant": "Reviewer"
+      },
+      {
+        "group": "legal_authenticator.Last reviewed by",
+        "variant": "Last reviewed by"
+      },
+      {
+        "group": "electronically_signed_provider.Signature",
+        "variant": "Signature"
+      }
+    ],
+    "file_path": "enc_negative_and_edge_003.txt"
+  },
+  {
+    "page_number": 20,
+    "encounter_id": "ENC_NEGATIVE_AND_EDGE_003",
+    "matches": [
+      {
+        "group": "legal_authenticator.Author",
+        "variant": "Author"
+      },
+      {
+        "group": "legal_authenticator.Cosigner",
+        "variant": "Cosigner"
+      },
+      {
+        "group": "electronically_signed_provider.Electronically signed by",
+        "variant": "Electronically signed by"
+      },
+      {
+        "group": "electronically_signed_provider.Signature",
+        "variant": "Signature"
+      },
+      {
+        "group": "electronically_signed_provider.Surgeon",
+        "variant": "Surgeon"
+      }
+    ],
+    "file_path": "enc_negative_and_edge_003.txt"
+  },
+  {
+    "page_number": 21,
+    "encounter_id": "ENC_NEGATIVE_AND_EDGE_003",
+    "matches": [
+      {
+        "group": "legal_authenticator.Reviewer",
+        "variant": "Reviewer"
+      }
+    ],
+    "file_path": "enc_negative_and_edge_003.txt"
+  }
+]

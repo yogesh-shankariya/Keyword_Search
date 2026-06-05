@@ -1,0 +1,24 @@
+{
+  "number_of_encounters": 3,
+  "cover": {
+    "text": "",
+    "file_path": ""
+  },
+  "encounters": [
+    {
+      "id": "ENC_WRONG_ORDER_001",
+      "file_path": "enc_wrong_order_001.txt",
+      "text": "<ocr_service_page_start>1<ocr_service_page_start>\nPATIENT: SAMPLE PATIENT 001    DOB: 01/01/1900    MRN: SAMPLE001\nEncounter Type: Cardiology progress note. The patient was seen for follow up of hypertension and intermittent chest discomfort.\nHistory of Present Illness: Patient denies acute shortness of breath today. Medication list was reconciled and reviewed.\nAssessment: Blood pressure remains mildly elevated. Continue current therapy and monitor renal function.\nPlan: Return to clinic in four weeks. Electronically signed by Example User One, MD on 04/06/2026 at 10:42 AM.\nClinician Signature: Example User One, MD. Attending Physician: Example User One.\n\n<ocr_service_page_start>2<ocr_service_page_start>\nPATIENT: SAMPLE PATIENT 001    Encounter Note Continuation\nThis page contains a radiology style report. The report findings were reviewed with the ordering provider.\nImpression: No acute cardiopulmonary abnormality. Mild chronic degenerative change is noted.\nThis document was reported and Signed by the reviewing radiologist after final verification.\nThe medication reconciliation section was Last reviewed by nursing staff at discharge.\nReviewer: Example User Six, RN. Legal Authenticator: System Verified.\n\n<ocr_service_page_start>3<ocr_service_page_start>\nPATIENT: SAMPLE PATIENT 001    Administrative page\nThe page includes scheduling notes, appointment reminders, and insurance information.\nThe patient confirmed demographic information. No provider authentication phrase appears on this page.\nDirector of operations was listed in the footer as a department contact, but no clinical signature phrase is present."
+    },
+    {
+      "id": "ENC_TYPO_AND_VARIATION_002",
+      "file_path": "enc_typo_and_variation_002.txt",
+      "text": "<ocr_service_page_start>10<ocr_service_page_start>\nPATIENT: SAMPLE PATIENT 002    DOB: 01/01/1900    MRN: SAMPLE002\nEmergency Department Provider Note. The patient presented with dizziness and weakness.\nCourse: Symptoms improved after hydration. Discharge education was reviewed in detail.\nThe note was reviewed, finalised, and Digitally signad by Example User Two, NP. This spelling simulates OCR typo in signed.\nNurse's Signature: Example User Seven, RN. Agent Signature: registration desk verified identity.\n\n<ocr_service_page_start>11<ocr_service_page_start>\nPATIENT: SAMPLE PATIENT 002    Addendum\nA late correction was entered after laboratory values were uploaded to the chart.\nVisit note addendum added by Example User Three, PA-C after patient callback on 05/02/2026.\nThe addendum does not change the diagnosis. Physician was notified.\n\n<ocr_service_page_start>12<ocr_service_page_start>\nPATIENT: SAMPLE PATIENT 002    Signature block\nThis page has reverse order words to test unordered proximity. By electronically signed provider line appears due to OCR reflow.\nThe original footer reads: by electronically signed after import from the scanned chart.\nPhysical Therapist: Example User Eight. Therapist Signature pending co-signature."
+    },
+    {
+      "id": "ENC_NEGATIVE_AND_EDGE_003",
+      "file_path": "enc_negative_and_edge_003.txt",
+      "text": "<ocr_service_page_start>19<ocr_service_page_start>\nPATIENT: SAMPLE PATIENT 003    DOB: 01/01/1900    MRN: SAMPLE003\nLaboratory result page. The result was released to the portal and acknowledged by the care team.\nReviewed for completeness by laboratory staff. The phrase last is mentioned in another unrelated sentence, but the target phrase is not nearby.\nNo digital signature phrase is present on this page.\n\n<ocr_service_page_start>20<ocr_service_page_start>\nPATIENT: SAMPLE PATIENT 003    Operative summary\nProcedure: Wound debridement and closure. Surgeon: Example User Four, MD.\nThe provider signature line was split by OCR as electronicaly signed by the surgeon, with a one-character typo in electronically.\nAuthor: Example User Four, MD. Cosigner: Example User Five, MD.\n\n<ocr_service_page_start>21<ocr_service_page_start>\nPATIENT: SAMPLE PATIENT 003    Bad OCR examples\nThe imported OCR text contains merged tokens such as electronicallysignedby and reportedandsignedby.\nThese should be hard for a normal token-based Whoosh query because the words are joined into one token.\nAnother sentence says reviewed many unrelated words across the paragraph and finally by, which should be outside a small slop window."
+    }
+  ]
+}

@@ -1,0 +1,1881 @@
+[2026-06-05T13:33:59.834670+00:00] file_id=sample_ocr_encounters_input.json event=log_opened elapsed_ms=0.148
+  input_path: Input/OCR/sample_ocr_encounters_input.json
+  log_path: Output/Logs/sample_ocr_encounters_input.log
+
+[2026-06-05T13:33:59.834749+00:00] file_id=sample_ocr_encounters_input.json event=file_processing_started elapsed_ms=0.177
+  output_path: Output/sample_ocr_encounters_input_keyword_output.json
+  keywords_json_file: Input/Keywords/sample_provider_role_keywords_flattened.json
+
+[2026-06-05T13:33:59.834762+00:00] file_id=sample_ocr_encounters_input.json event=keyword_detection_started elapsed_ms=0.189
+  ocr_json_file: Input/OCR/sample_ocr_encounters_input.json
+  keywords_json_file: Input/Keywords/sample_provider_role_keywords_flattened.json
+  slop: 5
+  edit_distance: 1
+  prefixlength: 0
+  index_dir: None
+  keep_stopwords: False
+  include_cover: False
+  include_empty_pages: True
+  include_file_path: True
+
+[2026-06-05T13:33:59.834812+00:00] file_id=sample_ocr_encounters_input.json event=ocr_json_read_finished elapsed_ms=0.239
+  duration_ms: 0.039
+  top_level_keys:
+    [
+      "number_of_encounters",
+      "cover",
+      "encounters"
+    ]
+  encounter_count: 3
+  has_cover: True
+
+[2026-06-05T13:33:59.834860+00:00] file_id=sample_ocr_encounters_input.json event=keywords_json_read_finished elapsed_ms=0.287
+  duration_ms: 0.028
+  top_level_keys:
+    [
+      "legal_authenticator.Director",
+      "legal_authenticator.Reviewer",
+      "legal_authenticator.Authenticator",
+      "legal_authenticator.ATTEST",
+      "legal_authenticator.Author",
+      "legal_authenticator.Cosigner",
+      "legal_authenticator.Attending",
+      "legal_authenticator.Legal Authenticator",
+      "legal_authenticator.Last reviewed by",
+      "electronically_signed_provider.Electronically signed by",
+      "electronically_signed_provider.Digitally signed by",
+      "electronically_signed_provider.Reported and Signed by",
+      "electronically_signed_provider.Visit note addendum added by",
+      "electronically_signed_provider.Signature",
+      "electronically_signed_provider.Physician",
+      "electronically_signed_provider.Surgeon",
+      "electronically_signed_provider.Agent Signature",
+      "electronically_signed_provider.Nurse's Signature",
+      "electronically_signed_provider.Clinician Signature",
+      "electronically_signed_provider.Attending Physician",
+      "electronically_signed_provider.Physical Therapist",
+      "electronically_signed_provider.Therapist Signature"
+    ]
+
+[2026-06-05T13:33:59.834951+00:00] file_id=sample_ocr_encounters_input.json event=pages_extracted elapsed_ms=0.378
+  duration_ms: 0.017
+  page_count: 9
+  pages:
+    [
+      {
+        "encounter_id": "ENC_WRONG_ORDER_001",
+        "file_path": "enc_wrong_order_001.txt",
+        "page_number": 1,
+        "content_chars": 611,
+        "content_preview": "PATIENT: SAMPLE PATIENT 001    DOB: 01/01/1900    MRN: SAMPLE001\\nEncounter Type: Cardiology progress note. The patient was seen for follow up of hypertension and intermittent chest discomfort.\\nHistory of Present Illness: Patient denies acute shortness of breath today. Medication list was reconcile..."
+      },
+      {
+        "encounter_id": "ENC_WRONG_ORDER_001",
+        "file_path": "enc_wrong_order_001.txt",
+        "page_number": 2,
+        "content_chars": 508,
+        "content_preview": "PATIENT: SAMPLE PATIENT 001    Encounter Note Continuation\\nThis page contains a radiology style report. The report findings were reviewed with the ordering provider.\\nImpression: No acute cardiopulmonary abnormality. Mild chronic degenerative change is noted.\\nThis document was reported and Signed ..."
+      },
+      {
+        "encounter_id": "ENC_WRONG_ORDER_001",
+        "file_path": "enc_wrong_order_001.txt",
+        "page_number": 3,
+        "content_chars": 357,
+        "content_preview": "PATIENT: SAMPLE PATIENT 001    Administrative page\\nThe page includes scheduling notes, appointment reminders, and insurance information.\\nThe patient confirmed demographic information. No provider authentication phrase appears on this page.\\nDirector of operations was listed in the footer as a depa..."
+      },
+      {
+        "encounter_id": "ENC_TYPO_AND_VARIATION_002",
+        "file_path": "enc_typo_and_variation_002.txt",
+        "page_number": 10,
+        "content_chars": 459,
+        "content_preview": "PATIENT: SAMPLE PATIENT 002    DOB: 01/01/1900    MRN: SAMPLE002\\nEmergency Department Provider Note. The patient presented with dizziness and weakness.\\nCourse: Symptoms improved after hydration. Discharge education was reviewed in detail.\\nThe note was reviewed, finalised, and Digitally signad by ..."
+      },
+      {
+        "encounter_id": "ENC_TYPO_AND_VARIATION_002",
+        "file_path": "enc_typo_and_variation_002.txt",
+        "page_number": 11,
+        "content_chars": 281,
+        "content_preview": "PATIENT: SAMPLE PATIENT 002    Addendum\\nA late correction was entered after laboratory values were uploaded to the chart.\\nVisit note addendum added by Example User Three, PA-C after patient callback on 05/02/2026.\\nThe addendum does not change the diagnosis. Physician was notified."
+      },
+      {
+        "encounter_id": "ENC_TYPO_AND_VARIATION_002",
+        "file_path": "enc_typo_and_variation_002.txt",
+        "page_number": 12,
+        "content_chars": 346,
+        "content_preview": "PATIENT: SAMPLE PATIENT 002    Signature block\\nThis page has reverse order words to test unordered proximity. By electronically signed provider line appears due to OCR reflow.\\nThe original footer reads: by electronically signed after import from the scanned chart.\\nPhysical Therapist: Example User..."
+      },
+      {
+        "encounter_id": "ENC_NEGATIVE_AND_EDGE_003",
+        "file_path": "enc_negative_and_edge_003.txt",
+        "page_number": 19,
+        "content_chars": 358,
+        "content_preview": "PATIENT: SAMPLE PATIENT 003    DOB: 01/01/1900    MRN: SAMPLE003\\nLaboratory result page. The result was released to the portal and acknowledged by the care team.\\nReviewed for completeness by laboratory staff. The phrase last is mentioned in another unrelated sentence, but the target phrase is not ..."
+      },
+      {
+        "encounter_id": "ENC_NEGATIVE_AND_EDGE_003",
+        "file_path": "enc_negative_and_edge_003.txt",
+        "page_number": 20,
+        "content_chars": 316,
+        "content_preview": "PATIENT: SAMPLE PATIENT 003    Operative summary\\nProcedure: Wound debridement and closure. Surgeon: Example User Four, MD.\\nThe provider signature line was split by OCR as electronicaly signed by the surgeon, with a one-character typo in electronically.\\nAuthor: Example User Four, MD. Cosigner: Exa..."
+      },
+      {
+        "encounter_id": "ENC_NEGATIVE_AND_EDGE_003",
+        "file_path": "enc_negative_and_edge_003.txt",
+        "page_number": 21,
+        "content_chars": 386,
+        "content_preview": "PATIENT: SAMPLE PATIENT 003    Bad OCR examples\\nThe imported OCR text contains merged tokens such as electronicallysignedby and reportedandsignedby.\\nThese should be hard for a normal token-based Whoosh query because the words are joined into one token.\\nAnother sentence says reviewed many unrelate..."
+      }
+    ]
+
+[2026-06-05T13:33:59.835015+00:00] file_id=sample_ocr_encounters_input.json event=keywords_flattened elapsed_ms=0.442
+  duration_ms: 0.005
+  keyword_variant_count: 22
+  keyword_group_count: 22
+  keyword_records:
+    [
+      {
+        "group": "legal_authenticator.Director",
+        "variant": "Director"
+      },
+      {
+        "group": "legal_authenticator.Reviewer",
+        "variant": "Reviewer"
+      },
+      {
+        "group": "legal_authenticator.Authenticator",
+        "variant": "Authenticator"
+      },
+      {
+        "group": "legal_authenticator.ATTEST",
+        "variant": "ATTEST"
+      },
+      {
+        "group": "legal_authenticator.Author",
+        "variant": "Author"
+      },
+      {
+        "group": "legal_authenticator.Cosigner",
+        "variant": "Cosigner"
+      },
+      {
+        "group": "legal_authenticator.Attending",
+        "variant": "Attending"
+      },
+      {
+        "group": "legal_authenticator.Legal Authenticator",
+        "variant": "Legal Authenticator"
+      },
+      {
+        "group": "legal_authenticator.Last reviewed by",
+        "variant": "Last reviewed by"
+      },
+      {
+        "group": "electronically_signed_provider.Electronically signed by",
+        "variant": "Electronically signed by"
+      },
+      {
+        "group": "electronically_signed_provider.Digitally signed by",
+        "variant": "Digitally signed by"
+      },
+      {
+        "group": "electronically_signed_provider.Reported and Signed by",
+        "variant": "reported and Signed by"
+      },
+      {
+        "group": "electronically_signed_provider.Visit note addendum added by",
+        "variant": "Visit note addendum added by"
+      },
+      {
+        "group": "electronically_signed_provider.Signature",
+        "variant": "Signature"
+      },
+      {
+        "group": "electronically_signed_provider.Physician",
+        "variant": "Physician"
+      },
+      {
+        "group": "electronically_signed_provider.Surgeon",
+        "variant": "Surgeon"
+      },
+      {
+        "group": "electronically_signed_provider.Agent Signature",
+        "variant": "Agent Signature"
+      },
+      {
+        "group": "electronically_signed_provider.Nurse's Signature",
+        "variant": "Nurse's Signature"
+      },
+      {
+        "group": "electronically_signed_provider.Clinician Signature",
+        "variant": "Clinician Signature"
+      },
+      {
+        "group": "electronically_signed_provider.Attending Physician",
+        "variant": "Attending Physician"
+      },
+      {
+        "group": "electronically_signed_provider.Physical Therapist",
+        "variant": "Physical Therapist"
+      },
+      {
+        "group": "electronically_signed_provider.Therapist Signature",
+        "variant": "Therapist Signature"
+      }
+    ]
+
+[2026-06-05T13:33:59.835526+00:00] file_id=sample_ocr_encounters_input.json event=temporary_index_dir_created elapsed_ms=0.953
+  index_dir: /var/folders/zl/mq5lfk3d2n5gfncztqb7rkwc0000gn/T/whoosh_encounter_keyword_index_cgr9ux3h
+
+[2026-06-05T13:33:59.835976+00:00] file_id=sample_ocr_encounters_input.json event=whoosh_index_created elapsed_ms=1.403
+  duration_ms: 0.443
+  index_dir: /var/folders/zl/mq5lfk3d2n5gfncztqb7rkwc0000gn/T/whoosh_encounter_keyword_index_cgr9ux3h
+  keep_stopwords: False
+
+[2026-06-05T13:33:59.838899+00:00] file_id=sample_ocr_encounters_input.json event=index_page_added elapsed_ms=4.327
+  doc_id: ENC_WRONG_ORDER_001::page_1::1
+  encounter_id: ENC_WRONG_ORDER_001
+  page_number: 1
+  file_path: enc_wrong_order_001.txt
+  content_chars: 611
+  content_preview: PATIENT: SAMPLE PATIENT 001    DOB: 01/01/1900    MRN: SAMPLE001\nEncounter Type: Cardiology progress note. The patient was seen for follow up of hypertension and intermittent chest discomfort.\nHistory of Present Illness: Patient denies acute shortness of breath today. Medication list was reconcile...
+
+[2026-06-05T13:33:59.839043+00:00] file_id=sample_ocr_encounters_input.json event=index_page_added elapsed_ms=4.469
+  doc_id: ENC_WRONG_ORDER_001::page_2::2
+  encounter_id: ENC_WRONG_ORDER_001
+  page_number: 2
+  file_path: enc_wrong_order_001.txt
+  content_chars: 508
+  content_preview: PATIENT: SAMPLE PATIENT 001    Encounter Note Continuation\nThis page contains a radiology style report. The report findings were reviewed with the ordering provider.\nImpression: No acute cardiopulmonary abnormality. Mild chronic degenerative change is noted.\nThis document was reported and Signed ...
+
+[2026-06-05T13:33:59.839135+00:00] file_id=sample_ocr_encounters_input.json event=index_page_added elapsed_ms=4.561
+  doc_id: ENC_WRONG_ORDER_001::page_3::3
+  encounter_id: ENC_WRONG_ORDER_001
+  page_number: 3
+  file_path: enc_wrong_order_001.txt
+  content_chars: 357
+  content_preview: PATIENT: SAMPLE PATIENT 001    Administrative page\nThe page includes scheduling notes, appointment reminders, and insurance information.\nThe patient confirmed demographic information. No provider authentication phrase appears on this page.\nDirector of operations was listed in the footer as a depa...
+
+[2026-06-05T13:33:59.839247+00:00] file_id=sample_ocr_encounters_input.json event=index_page_added elapsed_ms=4.673
+  doc_id: ENC_TYPO_AND_VARIATION_002::page_10::4
+  encounter_id: ENC_TYPO_AND_VARIATION_002
+  page_number: 10
+  file_path: enc_typo_and_variation_002.txt
+  content_chars: 459
+  content_preview: PATIENT: SAMPLE PATIENT 002    DOB: 01/01/1900    MRN: SAMPLE002\nEmergency Department Provider Note. The patient presented with dizziness and weakness.\nCourse: Symptoms improved after hydration. Discharge education was reviewed in detail.\nThe note was reviewed, finalised, and Digitally signad by ...
+
+[2026-06-05T13:33:59.839330+00:00] file_id=sample_ocr_encounters_input.json event=index_page_added elapsed_ms=4.756
+  doc_id: ENC_TYPO_AND_VARIATION_002::page_11::5
+  encounter_id: ENC_TYPO_AND_VARIATION_002
+  page_number: 11
+  file_path: enc_typo_and_variation_002.txt
+  content_chars: 281
+  content_preview: PATIENT: SAMPLE PATIENT 002    Addendum\nA late correction was entered after laboratory values were uploaded to the chart.\nVisit note addendum added by Example User Three, PA-C after patient callback on 05/02/2026.\nThe addendum does not change the diagnosis. Physician was notified.
+
+[2026-06-05T13:33:59.839417+00:00] file_id=sample_ocr_encounters_input.json event=index_page_added elapsed_ms=4.843
+  doc_id: ENC_TYPO_AND_VARIATION_002::page_12::6
+  encounter_id: ENC_TYPO_AND_VARIATION_002
+  page_number: 12
+  file_path: enc_typo_and_variation_002.txt
+  content_chars: 346
+  content_preview: PATIENT: SAMPLE PATIENT 002    Signature block\nThis page has reverse order words to test unordered proximity. By electronically signed provider line appears due to OCR reflow.\nThe original footer reads: by electronically signed after import from the scanned chart.\nPhysical Therapist: Example User...
+
+[2026-06-05T13:33:59.839505+00:00] file_id=sample_ocr_encounters_input.json event=index_page_added elapsed_ms=4.932
+  doc_id: ENC_NEGATIVE_AND_EDGE_003::page_19::7
+  encounter_id: ENC_NEGATIVE_AND_EDGE_003
+  page_number: 19
+  file_path: enc_negative_and_edge_003.txt
+  content_chars: 358
+  content_preview: PATIENT: SAMPLE PATIENT 003    DOB: 01/01/1900    MRN: SAMPLE003\nLaboratory result page. The result was released to the portal and acknowledged by the care team.\nReviewed for completeness by laboratory staff. The phrase last is mentioned in another unrelated sentence, but the target phrase is not ...
+
+[2026-06-05T13:33:59.839586+00:00] file_id=sample_ocr_encounters_input.json event=index_page_added elapsed_ms=5.012
+  doc_id: ENC_NEGATIVE_AND_EDGE_003::page_20::8
+  encounter_id: ENC_NEGATIVE_AND_EDGE_003
+  page_number: 20
+  file_path: enc_negative_and_edge_003.txt
+  content_chars: 316
+  content_preview: PATIENT: SAMPLE PATIENT 003    Operative summary\nProcedure: Wound debridement and closure. Surgeon: Example User Four, MD.\nThe provider signature line was split by OCR as electronicaly signed by the surgeon, with a one-character typo in electronically.\nAuthor: Example User Four, MD. Cosigner: Exa...
+
+[2026-06-05T13:33:59.839679+00:00] file_id=sample_ocr_encounters_input.json event=index_page_added elapsed_ms=5.106
+  doc_id: ENC_NEGATIVE_AND_EDGE_003::page_21::9
+  encounter_id: ENC_NEGATIVE_AND_EDGE_003
+  page_number: 21
+  file_path: enc_negative_and_edge_003.txt
+  content_chars: 386
+  content_preview: PATIENT: SAMPLE PATIENT 003    Bad OCR examples\nThe imported OCR text contains merged tokens such as electronicallysignedby and reportedandsignedby.\nThese should be hard for a normal token-based Whoosh query because the words are joined into one token.\nAnother sentence says reviewed many unrelate...
+
+[2026-06-05T13:33:59.844825+00:00] file_id=sample_ocr_encounters_input.json event=index_commit_finished elapsed_ms=10.252
+  indexed_page_count: 9
+
+[2026-06-05T13:33:59.844856+00:00] file_id=sample_ocr_encounters_input.json event=pages_indexed elapsed_ms=10.283
+  duration_ms: 8.872
+
+[2026-06-05T13:33:59.852397+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_started elapsed_ms=17.825
+  group: legal_authenticator.Director
+  variant: Director
+
+[2026-06-05T13:33:59.852494+00:00] file_id=sample_ocr_encounters_input.json event=keyword_analyzed elapsed_ms=17.921
+  keyword: Director
+  analyzed_terms:
+    [
+      "director"
+    ]
+  analyzed_term_count: 1
+
+[2026-06-05T13:33:59.853030+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=18.457
+  keyword: Director
+  term: director
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "director"
+    ]
+  expanded_term_count: 1
+
+[2026-06-05T13:33:59.853049+00:00] file_id=sample_ocr_encounters_input.json event=whoosh_query_built elapsed_ms=18.476
+  keyword: Director
+  query_type: Term
+  query: content:director
+
+[2026-06-05T13:33:59.853807+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=19.234
+  group: legal_authenticator.Director
+  variant: Director
+  doc_id: ENC_WRONG_ORDER_001::page_3::3
+  encounter_id: ENC_WRONG_ORDER_001
+  page_number: 3
+  file_path: enc_wrong_order_001.txt
+
+[2026-06-05T13:33:59.853817+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_finished elapsed_ms=19.243
+  group: legal_authenticator.Director
+  variant: Director
+  duration_ms: 1.42
+  hit_count: 1
+  added_match_count: 1
+  duplicate_match_count: 0
+  hits:
+    [
+      {
+        "doc_id": "ENC_WRONG_ORDER_001::page_3::3",
+        "encounter_id": "ENC_WRONG_ORDER_001",
+        "page_number": 3,
+        "file_path": "enc_wrong_order_001.txt"
+      }
+    ]
+
+[2026-06-05T13:33:59.853834+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_started elapsed_ms=19.26
+  group: legal_authenticator.Reviewer
+  variant: Reviewer
+
+[2026-06-05T13:33:59.853890+00:00] file_id=sample_ocr_encounters_input.json event=keyword_analyzed elapsed_ms=19.317
+  keyword: Reviewer
+  analyzed_terms:
+    [
+      "reviewer"
+    ]
+  analyzed_term_count: 1
+
+[2026-06-05T13:33:59.854446+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=19.872
+  keyword: Reviewer
+  term: reviewer
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "reviewed",
+      "reviewer"
+    ]
+  expanded_term_count: 2
+
+[2026-06-05T13:33:59.854466+00:00] file_id=sample_ocr_encounters_input.json event=whoosh_query_built elapsed_ms=19.892
+  keyword: Reviewer
+  query_type: SpanOr
+  query: SpanOr(Or([Term('content', 'reviewed'), Term('content', 'reviewer')]))
+
+[2026-06-05T13:33:59.854606+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=20.033
+  group: legal_authenticator.Reviewer
+  variant: Reviewer
+  doc_id: ENC_WRONG_ORDER_001::page_2::2
+  encounter_id: ENC_WRONG_ORDER_001
+  page_number: 2
+  file_path: enc_wrong_order_001.txt
+
+[2026-06-05T13:33:59.854623+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=20.049
+  group: legal_authenticator.Reviewer
+  variant: Reviewer
+  doc_id: ENC_TYPO_AND_VARIATION_002::page_10::4
+  encounter_id: ENC_TYPO_AND_VARIATION_002
+  page_number: 10
+  file_path: enc_typo_and_variation_002.txt
+
+[2026-06-05T13:33:59.854636+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=20.062
+  group: legal_authenticator.Reviewer
+  variant: Reviewer
+  doc_id: ENC_NEGATIVE_AND_EDGE_003::page_19::7
+  encounter_id: ENC_NEGATIVE_AND_EDGE_003
+  page_number: 19
+  file_path: enc_negative_and_edge_003.txt
+
+[2026-06-05T13:33:59.854648+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=20.074
+  group: legal_authenticator.Reviewer
+  variant: Reviewer
+  doc_id: ENC_NEGATIVE_AND_EDGE_003::page_21::9
+  encounter_id: ENC_NEGATIVE_AND_EDGE_003
+  page_number: 21
+  file_path: enc_negative_and_edge_003.txt
+
+[2026-06-05T13:33:59.854659+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=20.085
+  group: legal_authenticator.Reviewer
+  variant: Reviewer
+  doc_id: ENC_WRONG_ORDER_001::page_1::1
+  encounter_id: ENC_WRONG_ORDER_001
+  page_number: 1
+  file_path: enc_wrong_order_001.txt
+
+[2026-06-05T13:33:59.854665+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_finished elapsed_ms=20.091
+  group: legal_authenticator.Reviewer
+  variant: Reviewer
+  duration_ms: 0.831
+  hit_count: 5
+  added_match_count: 5
+  duplicate_match_count: 0
+  hits:
+    [
+      {
+        "doc_id": "ENC_WRONG_ORDER_001::page_2::2",
+        "encounter_id": "ENC_WRONG_ORDER_001",
+        "page_number": 2,
+        "file_path": "enc_wrong_order_001.txt"
+      },
+      {
+        "doc_id": "ENC_TYPO_AND_VARIATION_002::page_10::4",
+        "encounter_id": "ENC_TYPO_AND_VARIATION_002",
+        "page_number": 10,
+        "file_path": "enc_typo_and_variation_002.txt"
+      },
+      {
+        "doc_id": "ENC_NEGATIVE_AND_EDGE_003::page_19::7",
+        "encounter_id": "ENC_NEGATIVE_AND_EDGE_003",
+        "page_number": 19,
+        "file_path": "enc_negative_and_edge_003.txt"
+      },
+      {
+        "doc_id": "ENC_NEGATIVE_AND_EDGE_003::page_21::9",
+        "encounter_id": "ENC_NEGATIVE_AND_EDGE_003",
+        "page_number": 21,
+        "file_path": "enc_negative_and_edge_003.txt"
+      },
+      {
+        "doc_id": "ENC_WRONG_ORDER_001::page_1::1",
+        "encounter_id": "ENC_WRONG_ORDER_001",
+        "page_number": 1,
+        "file_path": "enc_wrong_order_001.txt"
+      }
+    ]
+
+[2026-06-05T13:33:59.854693+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_started elapsed_ms=20.12
+  group: legal_authenticator.Authenticator
+  variant: Authenticator
+
+[2026-06-05T13:33:59.854744+00:00] file_id=sample_ocr_encounters_input.json event=keyword_analyzed elapsed_ms=20.171
+  keyword: Authenticator
+  analyzed_terms:
+    [
+      "authenticator"
+    ]
+  analyzed_term_count: 1
+
+[2026-06-05T13:33:59.855390+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=20.816
+  keyword: Authenticator
+  term: authenticator
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "authenticator"
+    ]
+  expanded_term_count: 1
+
+[2026-06-05T13:33:59.855403+00:00] file_id=sample_ocr_encounters_input.json event=whoosh_query_built elapsed_ms=20.83
+  keyword: Authenticator
+  query_type: Term
+  query: content:authenticator
+
+[2026-06-05T13:33:59.855459+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=20.886
+  group: legal_authenticator.Authenticator
+  variant: Authenticator
+  doc_id: ENC_WRONG_ORDER_001::page_2::2
+  encounter_id: ENC_WRONG_ORDER_001
+  page_number: 2
+  file_path: enc_wrong_order_001.txt
+
+[2026-06-05T13:33:59.855466+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_finished elapsed_ms=20.892
+  group: legal_authenticator.Authenticator
+  variant: Authenticator
+  duration_ms: 0.772
+  hit_count: 1
+  added_match_count: 1
+  duplicate_match_count: 0
+  hits:
+    [
+      {
+        "doc_id": "ENC_WRONG_ORDER_001::page_2::2",
+        "encounter_id": "ENC_WRONG_ORDER_001",
+        "page_number": 2,
+        "file_path": "enc_wrong_order_001.txt"
+      }
+    ]
+
+[2026-06-05T13:33:59.855478+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_started elapsed_ms=20.905
+  group: legal_authenticator.ATTEST
+  variant: ATTEST
+
+[2026-06-05T13:33:59.855525+00:00] file_id=sample_ocr_encounters_input.json event=keyword_analyzed elapsed_ms=20.951
+  keyword: ATTEST
+  analyzed_terms:
+    [
+      "attest"
+    ]
+  analyzed_term_count: 1
+
+[2026-06-05T13:33:59.855936+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=21.362
+  keyword: ATTEST
+  term: attest
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms: []
+  expanded_term_count: 0
+
+[2026-06-05T13:33:59.855945+00:00] file_id=sample_ocr_encounters_input.json event=keyword_query_null elapsed_ms=21.371
+  keyword: ATTEST
+  reason: no_expanded_terms
+  missing_term: attest
+
+[2026-06-05T13:33:59.855957+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_finished elapsed_ms=21.383
+  group: legal_authenticator.ATTEST
+  variant: ATTEST
+  duration_ms: 0.478
+  hit_count: 0
+  added_match_count: 0
+  duplicate_match_count: 0
+  hits: []
+
+[2026-06-05T13:33:59.855964+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_started elapsed_ms=21.39
+  group: legal_authenticator.Author
+  variant: Author
+
+[2026-06-05T13:33:59.856013+00:00] file_id=sample_ocr_encounters_input.json event=keyword_analyzed elapsed_ms=21.439
+  keyword: Author
+  analyzed_terms:
+    [
+      "author"
+    ]
+  analyzed_term_count: 1
+
+[2026-06-05T13:33:59.856418+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=21.844
+  keyword: Author
+  term: author
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "author"
+    ]
+  expanded_term_count: 1
+
+[2026-06-05T13:33:59.856429+00:00] file_id=sample_ocr_encounters_input.json event=whoosh_query_built elapsed_ms=21.855
+  keyword: Author
+  query_type: Term
+  query: content:author
+
+[2026-06-05T13:33:59.856479+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=21.905
+  group: legal_authenticator.Author
+  variant: Author
+  doc_id: ENC_NEGATIVE_AND_EDGE_003::page_20::8
+  encounter_id: ENC_NEGATIVE_AND_EDGE_003
+  page_number: 20
+  file_path: enc_negative_and_edge_003.txt
+
+[2026-06-05T13:33:59.856485+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_finished elapsed_ms=21.911
+  group: legal_authenticator.Author
+  variant: Author
+  duration_ms: 0.52
+  hit_count: 1
+  added_match_count: 1
+  duplicate_match_count: 0
+  hits:
+    [
+      {
+        "doc_id": "ENC_NEGATIVE_AND_EDGE_003::page_20::8",
+        "encounter_id": "ENC_NEGATIVE_AND_EDGE_003",
+        "page_number": 20,
+        "file_path": "enc_negative_and_edge_003.txt"
+      }
+    ]
+
+[2026-06-05T13:33:59.856497+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_started elapsed_ms=21.923
+  group: legal_authenticator.Cosigner
+  variant: Cosigner
+
+[2026-06-05T13:33:59.856540+00:00] file_id=sample_ocr_encounters_input.json event=keyword_analyzed elapsed_ms=21.966
+  keyword: Cosigner
+  analyzed_terms:
+    [
+      "cosigner"
+    ]
+  analyzed_term_count: 1
+
+[2026-06-05T13:33:59.857056+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=22.483
+  keyword: Cosigner
+  term: cosigner
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "cosigner"
+    ]
+  expanded_term_count: 1
+
+[2026-06-05T13:33:59.857067+00:00] file_id=sample_ocr_encounters_input.json event=whoosh_query_built elapsed_ms=22.493
+  keyword: Cosigner
+  query_type: Term
+  query: content:cosigner
+
+[2026-06-05T13:33:59.857112+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=22.538
+  group: legal_authenticator.Cosigner
+  variant: Cosigner
+  doc_id: ENC_NEGATIVE_AND_EDGE_003::page_20::8
+  encounter_id: ENC_NEGATIVE_AND_EDGE_003
+  page_number: 20
+  file_path: enc_negative_and_edge_003.txt
+
+[2026-06-05T13:33:59.857118+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_finished elapsed_ms=22.544
+  group: legal_authenticator.Cosigner
+  variant: Cosigner
+  duration_ms: 0.621
+  hit_count: 1
+  added_match_count: 1
+  duplicate_match_count: 0
+  hits:
+    [
+      {
+        "doc_id": "ENC_NEGATIVE_AND_EDGE_003::page_20::8",
+        "encounter_id": "ENC_NEGATIVE_AND_EDGE_003",
+        "page_number": 20,
+        "file_path": "enc_negative_and_edge_003.txt"
+      }
+    ]
+
+[2026-06-05T13:33:59.857130+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_started elapsed_ms=22.556
+  group: legal_authenticator.Attending
+  variant: Attending
+
+[2026-06-05T13:33:59.857172+00:00] file_id=sample_ocr_encounters_input.json event=keyword_analyzed elapsed_ms=22.598
+  keyword: Attending
+  analyzed_terms:
+    [
+      "attending"
+    ]
+  analyzed_term_count: 1
+
+[2026-06-05T13:33:59.857649+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=23.075
+  keyword: Attending
+  term: attending
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "attending"
+    ]
+  expanded_term_count: 1
+
+[2026-06-05T13:33:59.857659+00:00] file_id=sample_ocr_encounters_input.json event=whoosh_query_built elapsed_ms=23.085
+  keyword: Attending
+  query_type: Term
+  query: content:attending
+
+[2026-06-05T13:33:59.857704+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=23.131
+  group: legal_authenticator.Attending
+  variant: Attending
+  doc_id: ENC_WRONG_ORDER_001::page_1::1
+  encounter_id: ENC_WRONG_ORDER_001
+  page_number: 1
+  file_path: enc_wrong_order_001.txt
+
+[2026-06-05T13:33:59.857713+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_finished elapsed_ms=23.139
+  group: legal_authenticator.Attending
+  variant: Attending
+  duration_ms: 0.583
+  hit_count: 1
+  added_match_count: 1
+  duplicate_match_count: 0
+  hits:
+    [
+      {
+        "doc_id": "ENC_WRONG_ORDER_001::page_1::1",
+        "encounter_id": "ENC_WRONG_ORDER_001",
+        "page_number": 1,
+        "file_path": "enc_wrong_order_001.txt"
+      }
+    ]
+
+[2026-06-05T13:33:59.857724+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_started elapsed_ms=23.151
+  group: legal_authenticator.Legal Authenticator
+  variant: Legal Authenticator
+
+[2026-06-05T13:33:59.857766+00:00] file_id=sample_ocr_encounters_input.json event=keyword_analyzed elapsed_ms=23.193
+  keyword: Legal Authenticator
+  analyzed_terms:
+    [
+      "legal",
+      "authenticator"
+    ]
+  analyzed_term_count: 2
+
+[2026-06-05T13:33:59.858123+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=23.549
+  keyword: Legal Authenticator
+  term: legal
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "legal"
+    ]
+  expanded_term_count: 1
+
+[2026-06-05T13:33:59.859062+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=24.491
+  keyword: Legal Authenticator
+  term: authenticator
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "authenticator"
+    ]
+  expanded_term_count: 1
+
+[2026-06-05T13:33:59.859097+00:00] file_id=sample_ocr_encounters_input.json event=whoosh_query_built elapsed_ms=24.524
+  keyword: Legal Authenticator
+  query_type: SpanNear2
+  query: SpanNear2([Term('content', 'legal'), Term('content', 'authenticator')], slop=5, ordered=False, mindist=1)
+  slop: 5
+  ordered: False
+
+[2026-06-05T13:33:59.859231+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=24.658
+  group: legal_authenticator.Legal Authenticator
+  variant: Legal Authenticator
+  doc_id: ENC_WRONG_ORDER_001::page_2::2
+  encounter_id: ENC_WRONG_ORDER_001
+  page_number: 2
+  file_path: enc_wrong_order_001.txt
+
+[2026-06-05T13:33:59.859242+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_finished elapsed_ms=24.668
+  group: legal_authenticator.Legal Authenticator
+  variant: Legal Authenticator
+  duration_ms: 1.516
+  hit_count: 1
+  added_match_count: 1
+  duplicate_match_count: 0
+  hits:
+    [
+      {
+        "doc_id": "ENC_WRONG_ORDER_001::page_2::2",
+        "encounter_id": "ENC_WRONG_ORDER_001",
+        "page_number": 2,
+        "file_path": "enc_wrong_order_001.txt"
+      }
+    ]
+
+[2026-06-05T13:33:59.859259+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_started elapsed_ms=24.686
+  group: legal_authenticator.Last reviewed by
+  variant: Last reviewed by
+
+[2026-06-05T13:33:59.859336+00:00] file_id=sample_ocr_encounters_input.json event=keyword_analyzed elapsed_ms=24.763
+  keyword: Last reviewed by
+  analyzed_terms:
+    [
+      "last",
+      "reviewed"
+    ]
+  analyzed_term_count: 2
+
+[2026-06-05T13:33:59.859723+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=25.149
+  keyword: Last reviewed by
+  term: last
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "last",
+      "list"
+    ]
+  expanded_term_count: 2
+
+[2026-06-05T13:33:59.860265+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=25.692
+  keyword: Last reviewed by
+  term: reviewed
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "reviewed",
+      "reviewer"
+    ]
+  expanded_term_count: 2
+
+[2026-06-05T13:33:59.860283+00:00] file_id=sample_ocr_encounters_input.json event=whoosh_query_built elapsed_ms=25.709
+  keyword: Last reviewed by
+  query_type: SpanNear2
+  query: SpanNear2([SpanOr(Or([Term('content', 'last'), Term('content', 'list')])), SpanOr(Or([Term('content', 'reviewed'), Term('content', 'reviewer')]))], slop=5, ordered=False, mindist=1)
+  slop: 5
+  ordered: False
+
+[2026-06-05T13:33:59.860457+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=25.883
+  group: legal_authenticator.Last reviewed by
+  variant: Last reviewed by
+  doc_id: ENC_WRONG_ORDER_001::page_2::2
+  encounter_id: ENC_WRONG_ORDER_001
+  page_number: 2
+  file_path: enc_wrong_order_001.txt
+
+[2026-06-05T13:33:59.860473+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=25.899
+  group: legal_authenticator.Last reviewed by
+  variant: Last reviewed by
+  doc_id: ENC_NEGATIVE_AND_EDGE_003::page_19::7
+  encounter_id: ENC_NEGATIVE_AND_EDGE_003
+  page_number: 19
+  file_path: enc_negative_and_edge_003.txt
+
+[2026-06-05T13:33:59.860487+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=25.913
+  group: legal_authenticator.Last reviewed by
+  variant: Last reviewed by
+  doc_id: ENC_WRONG_ORDER_001::page_1::1
+  encounter_id: ENC_WRONG_ORDER_001
+  page_number: 1
+  file_path: enc_wrong_order_001.txt
+
+[2026-06-05T13:33:59.860493+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_finished elapsed_ms=25.919
+  group: legal_authenticator.Last reviewed by
+  variant: Last reviewed by
+  duration_ms: 1.233
+  hit_count: 3
+  added_match_count: 3
+  duplicate_match_count: 0
+  hits:
+    [
+      {
+        "doc_id": "ENC_WRONG_ORDER_001::page_2::2",
+        "encounter_id": "ENC_WRONG_ORDER_001",
+        "page_number": 2,
+        "file_path": "enc_wrong_order_001.txt"
+      },
+      {
+        "doc_id": "ENC_NEGATIVE_AND_EDGE_003::page_19::7",
+        "encounter_id": "ENC_NEGATIVE_AND_EDGE_003",
+        "page_number": 19,
+        "file_path": "enc_negative_and_edge_003.txt"
+      },
+      {
+        "doc_id": "ENC_WRONG_ORDER_001::page_1::1",
+        "encounter_id": "ENC_WRONG_ORDER_001",
+        "page_number": 1,
+        "file_path": "enc_wrong_order_001.txt"
+      }
+    ]
+
+[2026-06-05T13:33:59.860512+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_started elapsed_ms=25.938
+  group: electronically_signed_provider.Electronically signed by
+  variant: Electronically signed by
+
+[2026-06-05T13:33:59.860569+00:00] file_id=sample_ocr_encounters_input.json event=keyword_analyzed elapsed_ms=25.995
+  keyword: Electronically signed by
+  analyzed_terms:
+    [
+      "electronically",
+      "signed"
+    ]
+  analyzed_term_count: 2
+
+[2026-06-05T13:33:59.861181+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=26.607
+  keyword: Electronically signed by
+  term: electronically
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "electronically",
+      "electronicaly"
+    ]
+  expanded_term_count: 2
+
+[2026-06-05T13:33:59.861660+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=27.086
+  keyword: Electronically signed by
+  term: signed
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "signad",
+      "signed"
+    ]
+  expanded_term_count: 2
+
+[2026-06-05T13:33:59.861675+00:00] file_id=sample_ocr_encounters_input.json event=whoosh_query_built elapsed_ms=27.101
+  keyword: Electronically signed by
+  query_type: SpanNear2
+  query: SpanNear2([SpanOr(Or([Term('content', 'electronically'), Term('content', 'electronicaly')])), SpanOr(Or([Term('content', 'signad'), Term('content', 'signed')]))], slop=5, ordered=False, mindist=1)
+  slop: 5
+  ordered: False
+
+[2026-06-05T13:33:59.861832+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=27.258
+  group: electronically_signed_provider.Electronically signed by
+  variant: Electronically signed by
+  doc_id: ENC_NEGATIVE_AND_EDGE_003::page_20::8
+  encounter_id: ENC_NEGATIVE_AND_EDGE_003
+  page_number: 20
+  file_path: enc_negative_and_edge_003.txt
+
+[2026-06-05T13:33:59.861846+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=27.272
+  group: electronically_signed_provider.Electronically signed by
+  variant: Electronically signed by
+  doc_id: ENC_TYPO_AND_VARIATION_002::page_12::6
+  encounter_id: ENC_TYPO_AND_VARIATION_002
+  page_number: 12
+  file_path: enc_typo_and_variation_002.txt
+
+[2026-06-05T13:33:59.861861+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=27.287
+  group: electronically_signed_provider.Electronically signed by
+  variant: Electronically signed by
+  doc_id: ENC_WRONG_ORDER_001::page_1::1
+  encounter_id: ENC_WRONG_ORDER_001
+  page_number: 1
+  file_path: enc_wrong_order_001.txt
+
+[2026-06-05T13:33:59.861867+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_finished elapsed_ms=27.293
+  group: electronically_signed_provider.Electronically signed by
+  variant: Electronically signed by
+  duration_ms: 1.354
+  hit_count: 3
+  added_match_count: 3
+  duplicate_match_count: 0
+  hits:
+    [
+      {
+        "doc_id": "ENC_NEGATIVE_AND_EDGE_003::page_20::8",
+        "encounter_id": "ENC_NEGATIVE_AND_EDGE_003",
+        "page_number": 20,
+        "file_path": "enc_negative_and_edge_003.txt"
+      },
+      {
+        "doc_id": "ENC_TYPO_AND_VARIATION_002::page_12::6",
+        "encounter_id": "ENC_TYPO_AND_VARIATION_002",
+        "page_number": 12,
+        "file_path": "enc_typo_and_variation_002.txt"
+      },
+      {
+        "doc_id": "ENC_WRONG_ORDER_001::page_1::1",
+        "encounter_id": "ENC_WRONG_ORDER_001",
+        "page_number": 1,
+        "file_path": "enc_wrong_order_001.txt"
+      }
+    ]
+
+[2026-06-05T13:33:59.861884+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_started elapsed_ms=27.311
+  group: electronically_signed_provider.Digitally signed by
+  variant: Digitally signed by
+
+[2026-06-05T13:33:59.861939+00:00] file_id=sample_ocr_encounters_input.json event=keyword_analyzed elapsed_ms=27.365
+  keyword: Digitally signed by
+  analyzed_terms:
+    [
+      "digitally",
+      "signed"
+    ]
+  analyzed_term_count: 2
+
+[2026-06-05T13:33:59.862426+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=27.852
+  keyword: Digitally signed by
+  term: digitally
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "digitally"
+    ]
+  expanded_term_count: 1
+
+[2026-06-05T13:33:59.862902+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=28.328
+  keyword: Digitally signed by
+  term: signed
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "signad",
+      "signed"
+    ]
+  expanded_term_count: 2
+
+[2026-06-05T13:33:59.862915+00:00] file_id=sample_ocr_encounters_input.json event=whoosh_query_built elapsed_ms=28.341
+  keyword: Digitally signed by
+  query_type: SpanNear2
+  query: SpanNear2([Term('content', 'digitally'), SpanOr(Or([Term('content', 'signad'), Term('content', 'signed')]))], slop=5, ordered=False, mindist=1)
+  slop: 5
+  ordered: False
+
+[2026-06-05T13:33:59.863017+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=28.443
+  group: electronically_signed_provider.Digitally signed by
+  variant: Digitally signed by
+  doc_id: ENC_TYPO_AND_VARIATION_002::page_10::4
+  encounter_id: ENC_TYPO_AND_VARIATION_002
+  page_number: 10
+  file_path: enc_typo_and_variation_002.txt
+
+[2026-06-05T13:33:59.863023+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_finished elapsed_ms=28.449
+  group: electronically_signed_provider.Digitally signed by
+  variant: Digitally signed by
+  duration_ms: 1.138
+  hit_count: 1
+  added_match_count: 1
+  duplicate_match_count: 0
+  hits:
+    [
+      {
+        "doc_id": "ENC_TYPO_AND_VARIATION_002::page_10::4",
+        "encounter_id": "ENC_TYPO_AND_VARIATION_002",
+        "page_number": 10,
+        "file_path": "enc_typo_and_variation_002.txt"
+      }
+    ]
+
+[2026-06-05T13:33:59.863036+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_started elapsed_ms=28.462
+  group: electronically_signed_provider.Reported and Signed by
+  variant: reported and Signed by
+
+[2026-06-05T13:33:59.863089+00:00] file_id=sample_ocr_encounters_input.json event=keyword_analyzed elapsed_ms=28.515
+  keyword: reported and Signed by
+  analyzed_terms:
+    [
+      "reported",
+      "signed"
+    ]
+  analyzed_term_count: 2
+
+[2026-06-05T13:33:59.863607+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=29.033
+  keyword: reported and Signed by
+  term: reported
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "reported"
+    ]
+  expanded_term_count: 1
+
+[2026-06-05T13:33:59.864078+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=29.505
+  keyword: reported and Signed by
+  term: signed
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "signad",
+      "signed"
+    ]
+  expanded_term_count: 2
+
+[2026-06-05T13:33:59.864092+00:00] file_id=sample_ocr_encounters_input.json event=whoosh_query_built elapsed_ms=29.518
+  keyword: reported and Signed by
+  query_type: SpanNear2
+  query: SpanNear2([Term('content', 'reported'), SpanOr(Or([Term('content', 'signad'), Term('content', 'signed')]))], slop=5, ordered=False, mindist=1)
+  slop: 5
+  ordered: False
+
+[2026-06-05T13:33:59.864188+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=29.615
+  group: electronically_signed_provider.Reported and Signed by
+  variant: reported and Signed by
+  doc_id: ENC_WRONG_ORDER_001::page_2::2
+  encounter_id: ENC_WRONG_ORDER_001
+  page_number: 2
+  file_path: enc_wrong_order_001.txt
+
+[2026-06-05T13:33:59.864195+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_finished elapsed_ms=29.621
+  group: electronically_signed_provider.Reported and Signed by
+  variant: reported and Signed by
+  duration_ms: 1.159
+  hit_count: 1
+  added_match_count: 1
+  duplicate_match_count: 0
+  hits:
+    [
+      {
+        "doc_id": "ENC_WRONG_ORDER_001::page_2::2",
+        "encounter_id": "ENC_WRONG_ORDER_001",
+        "page_number": 2,
+        "file_path": "enc_wrong_order_001.txt"
+      }
+    ]
+
+[2026-06-05T13:33:59.864208+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_started elapsed_ms=29.634
+  group: electronically_signed_provider.Visit note addendum added by
+  variant: Visit note addendum added by
+
+[2026-06-05T13:33:59.864260+00:00] file_id=sample_ocr_encounters_input.json event=keyword_analyzed elapsed_ms=29.686
+  keyword: Visit note addendum added by
+  analyzed_terms:
+    [
+      "visit",
+      "note",
+      "addendum",
+      "added"
+    ]
+  analyzed_term_count: 4
+
+[2026-06-05T13:33:59.864624+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=30.05
+  keyword: Visit note addendum added by
+  term: visit
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "visit"
+    ]
+  expanded_term_count: 1
+
+[2026-06-05T13:33:59.864993+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=30.419
+  keyword: Visit note addendum added by
+  term: note
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "note",
+      "noted",
+      "notes"
+    ]
+  expanded_term_count: 3
+
+[2026-06-05T13:33:59.865503+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=30.929
+  keyword: Visit note addendum added by
+  term: addendum
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "addendum"
+    ]
+  expanded_term_count: 1
+
+[2026-06-05T13:33:59.865898+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=31.325
+  keyword: Visit note addendum added by
+  term: added
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "added"
+    ]
+  expanded_term_count: 1
+
+[2026-06-05T13:33:59.865911+00:00] file_id=sample_ocr_encounters_input.json event=whoosh_query_built elapsed_ms=31.338
+  keyword: Visit note addendum added by
+  query_type: SpanNear2
+  query: SpanNear2([Term('content', 'visit'), SpanOr(Or([Term('content', 'note'), Term('content', 'noted'), Term('content', 'notes')])), Term('content', 'addendum'), Term('content', 'added')], slop=5, ordered=False, mindist=1)
+  slop: 5
+  ordered: False
+
+[2026-06-05T13:33:59.866077+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=31.503
+  group: electronically_signed_provider.Visit note addendum added by
+  variant: Visit note addendum added by
+  doc_id: ENC_TYPO_AND_VARIATION_002::page_11::5
+  encounter_id: ENC_TYPO_AND_VARIATION_002
+  page_number: 11
+  file_path: enc_typo_and_variation_002.txt
+
+[2026-06-05T13:33:59.866086+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_finished elapsed_ms=31.512
+  group: electronically_signed_provider.Visit note addendum added by
+  variant: Visit note addendum added by
+  duration_ms: 1.877
+  hit_count: 1
+  added_match_count: 1
+  duplicate_match_count: 0
+  hits:
+    [
+      {
+        "doc_id": "ENC_TYPO_AND_VARIATION_002::page_11::5",
+        "encounter_id": "ENC_TYPO_AND_VARIATION_002",
+        "page_number": 11,
+        "file_path": "enc_typo_and_variation_002.txt"
+      }
+    ]
+
+[2026-06-05T13:33:59.866098+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_started elapsed_ms=31.524
+  group: electronically_signed_provider.Signature
+  variant: Signature
+
+[2026-06-05T13:33:59.866143+00:00] file_id=sample_ocr_encounters_input.json event=keyword_analyzed elapsed_ms=31.57
+  keyword: Signature
+  analyzed_terms:
+    [
+      "signature"
+    ]
+  analyzed_term_count: 1
+
+[2026-06-05T13:33:59.866685+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=32.111
+  keyword: Signature
+  term: signature
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "signature"
+    ]
+  expanded_term_count: 1
+
+[2026-06-05T13:33:59.866696+00:00] file_id=sample_ocr_encounters_input.json event=whoosh_query_built elapsed_ms=32.122
+  keyword: Signature
+  query_type: Term
+  query: content:signature
+
+[2026-06-05T13:33:59.866751+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=32.177
+  group: electronically_signed_provider.Signature
+  variant: Signature
+  doc_id: ENC_TYPO_AND_VARIATION_002::page_12::6
+  encounter_id: ENC_TYPO_AND_VARIATION_002
+  page_number: 12
+  file_path: enc_typo_and_variation_002.txt
+
+[2026-06-05T13:33:59.866764+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=32.19
+  group: electronically_signed_provider.Signature
+  variant: Signature
+  doc_id: ENC_TYPO_AND_VARIATION_002::page_10::4
+  encounter_id: ENC_TYPO_AND_VARIATION_002
+  page_number: 10
+  file_path: enc_typo_and_variation_002.txt
+
+[2026-06-05T13:33:59.866775+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=32.201
+  group: electronically_signed_provider.Signature
+  variant: Signature
+  doc_id: ENC_WRONG_ORDER_001::page_3::3
+  encounter_id: ENC_WRONG_ORDER_001
+  page_number: 3
+  file_path: enc_wrong_order_001.txt
+
+[2026-06-05T13:33:59.866785+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=32.211
+  group: electronically_signed_provider.Signature
+  variant: Signature
+  doc_id: ENC_NEGATIVE_AND_EDGE_003::page_20::8
+  encounter_id: ENC_NEGATIVE_AND_EDGE_003
+  page_number: 20
+  file_path: enc_negative_and_edge_003.txt
+
+[2026-06-05T13:33:59.866796+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=32.222
+  group: electronically_signed_provider.Signature
+  variant: Signature
+  doc_id: ENC_NEGATIVE_AND_EDGE_003::page_19::7
+  encounter_id: ENC_NEGATIVE_AND_EDGE_003
+  page_number: 19
+  file_path: enc_negative_and_edge_003.txt
+
+[2026-06-05T13:33:59.866807+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=32.233
+  group: electronically_signed_provider.Signature
+  variant: Signature
+  doc_id: ENC_WRONG_ORDER_001::page_1::1
+  encounter_id: ENC_WRONG_ORDER_001
+  page_number: 1
+  file_path: enc_wrong_order_001.txt
+
+[2026-06-05T13:33:59.866812+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_finished elapsed_ms=32.238
+  group: electronically_signed_provider.Signature
+  variant: Signature
+  duration_ms: 0.713
+  hit_count: 6
+  added_match_count: 6
+  duplicate_match_count: 0
+  hits:
+    [
+      {
+        "doc_id": "ENC_TYPO_AND_VARIATION_002::page_12::6",
+        "encounter_id": "ENC_TYPO_AND_VARIATION_002",
+        "page_number": 12,
+        "file_path": "enc_typo_and_variation_002.txt"
+      },
+      {
+        "doc_id": "ENC_TYPO_AND_VARIATION_002::page_10::4",
+        "encounter_id": "ENC_TYPO_AND_VARIATION_002",
+        "page_number": 10,
+        "file_path": "enc_typo_and_variation_002.txt"
+      },
+      {
+        "doc_id": "ENC_WRONG_ORDER_001::page_3::3",
+        "encounter_id": "ENC_WRONG_ORDER_001",
+        "page_number": 3,
+        "file_path": "enc_wrong_order_001.txt"
+      },
+      {
+        "doc_id": "ENC_NEGATIVE_AND_EDGE_003::page_20::8",
+        "encounter_id": "ENC_NEGATIVE_AND_EDGE_003",
+        "page_number": 20,
+        "file_path": "enc_negative_and_edge_003.txt"
+      },
+      {
+        "doc_id": "ENC_NEGATIVE_AND_EDGE_003::page_19::7",
+        "encounter_id": "ENC_NEGATIVE_AND_EDGE_003",
+        "page_number": 19,
+        "file_path": "enc_negative_and_edge_003.txt"
+      },
+      {
+        "doc_id": "ENC_WRONG_ORDER_001::page_1::1",
+        "encounter_id": "ENC_WRONG_ORDER_001",
+        "page_number": 1,
+        "file_path": "enc_wrong_order_001.txt"
+      }
+    ]
+
+[2026-06-05T13:33:59.866841+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_started elapsed_ms=32.267
+  group: electronically_signed_provider.Physician
+  variant: Physician
+
+[2026-06-05T13:33:59.866886+00:00] file_id=sample_ocr_encounters_input.json event=keyword_analyzed elapsed_ms=32.312
+  keyword: Physician
+  analyzed_terms:
+    [
+      "physician"
+    ]
+  analyzed_term_count: 1
+
+[2026-06-05T13:33:59.867407+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=32.833
+  keyword: Physician
+  term: physician
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "physician"
+    ]
+  expanded_term_count: 1
+
+[2026-06-05T13:33:59.867417+00:00] file_id=sample_ocr_encounters_input.json event=whoosh_query_built elapsed_ms=32.843
+  keyword: Physician
+  query_type: Term
+  query: content:physician
+
+[2026-06-05T13:33:59.867466+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=32.892
+  group: electronically_signed_provider.Physician
+  variant: Physician
+  doc_id: ENC_TYPO_AND_VARIATION_002::page_11::5
+  encounter_id: ENC_TYPO_AND_VARIATION_002
+  page_number: 11
+  file_path: enc_typo_and_variation_002.txt
+
+[2026-06-05T13:33:59.867478+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=32.904
+  group: electronically_signed_provider.Physician
+  variant: Physician
+  doc_id: ENC_WRONG_ORDER_001::page_1::1
+  encounter_id: ENC_WRONG_ORDER_001
+  page_number: 1
+  file_path: enc_wrong_order_001.txt
+
+[2026-06-05T13:33:59.867483+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_finished elapsed_ms=32.909
+  group: electronically_signed_provider.Physician
+  variant: Physician
+  duration_ms: 0.642
+  hit_count: 2
+  added_match_count: 2
+  duplicate_match_count: 0
+  hits:
+    [
+      {
+        "doc_id": "ENC_TYPO_AND_VARIATION_002::page_11::5",
+        "encounter_id": "ENC_TYPO_AND_VARIATION_002",
+        "page_number": 11,
+        "file_path": "enc_typo_and_variation_002.txt"
+      },
+      {
+        "doc_id": "ENC_WRONG_ORDER_001::page_1::1",
+        "encounter_id": "ENC_WRONG_ORDER_001",
+        "page_number": 1,
+        "file_path": "enc_wrong_order_001.txt"
+      }
+    ]
+
+[2026-06-05T13:33:59.867498+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_started elapsed_ms=32.924
+  group: electronically_signed_provider.Surgeon
+  variant: Surgeon
+
+[2026-06-05T13:33:59.867541+00:00] file_id=sample_ocr_encounters_input.json event=keyword_analyzed elapsed_ms=32.967
+  keyword: Surgeon
+  analyzed_terms:
+    [
+      "surgeon"
+    ]
+  analyzed_term_count: 1
+
+[2026-06-05T13:33:59.867965+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=33.391
+  keyword: Surgeon
+  term: surgeon
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "surgeon"
+    ]
+  expanded_term_count: 1
+
+[2026-06-05T13:33:59.867975+00:00] file_id=sample_ocr_encounters_input.json event=whoosh_query_built elapsed_ms=33.401
+  keyword: Surgeon
+  query_type: Term
+  query: content:surgeon
+
+[2026-06-05T13:33:59.868024+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=33.451
+  group: electronically_signed_provider.Surgeon
+  variant: Surgeon
+  doc_id: ENC_NEGATIVE_AND_EDGE_003::page_20::8
+  encounter_id: ENC_NEGATIVE_AND_EDGE_003
+  page_number: 20
+  file_path: enc_negative_and_edge_003.txt
+
+[2026-06-05T13:33:59.868030+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_finished elapsed_ms=33.456
+  group: electronically_signed_provider.Surgeon
+  variant: Surgeon
+  duration_ms: 0.533
+  hit_count: 1
+  added_match_count: 1
+  duplicate_match_count: 0
+  hits:
+    [
+      {
+        "doc_id": "ENC_NEGATIVE_AND_EDGE_003::page_20::8",
+        "encounter_id": "ENC_NEGATIVE_AND_EDGE_003",
+        "page_number": 20,
+        "file_path": "enc_negative_and_edge_003.txt"
+      }
+    ]
+
+[2026-06-05T13:33:59.868043+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_started elapsed_ms=33.469
+  group: electronically_signed_provider.Agent Signature
+  variant: Agent Signature
+
+[2026-06-05T13:33:59.868087+00:00] file_id=sample_ocr_encounters_input.json event=keyword_analyzed elapsed_ms=33.513
+  keyword: Agent Signature
+  analyzed_terms:
+    [
+      "agent",
+      "signature"
+    ]
+  analyzed_term_count: 2
+
+[2026-06-05T13:33:59.868511+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=33.937
+  keyword: Agent Signature
+  term: agent
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "agent"
+    ]
+  expanded_term_count: 1
+
+[2026-06-05T13:33:59.869066+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=34.492
+  keyword: Agent Signature
+  term: signature
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "signature"
+    ]
+  expanded_term_count: 1
+
+[2026-06-05T13:33:59.869078+00:00] file_id=sample_ocr_encounters_input.json event=whoosh_query_built elapsed_ms=34.504
+  keyword: Agent Signature
+  query_type: SpanNear2
+  query: SpanNear2([Term('content', 'agent'), Term('content', 'signature')], slop=5, ordered=False, mindist=1)
+  slop: 5
+  ordered: False
+
+[2026-06-05T13:33:59.869161+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=34.588
+  group: electronically_signed_provider.Agent Signature
+  variant: Agent Signature
+  doc_id: ENC_TYPO_AND_VARIATION_002::page_10::4
+  encounter_id: ENC_TYPO_AND_VARIATION_002
+  page_number: 10
+  file_path: enc_typo_and_variation_002.txt
+
+[2026-06-05T13:33:59.869169+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_finished elapsed_ms=34.595
+  group: electronically_signed_provider.Agent Signature
+  variant: Agent Signature
+  duration_ms: 1.125
+  hit_count: 1
+  added_match_count: 1
+  duplicate_match_count: 0
+  hits:
+    [
+      {
+        "doc_id": "ENC_TYPO_AND_VARIATION_002::page_10::4",
+        "encounter_id": "ENC_TYPO_AND_VARIATION_002",
+        "page_number": 10,
+        "file_path": "enc_typo_and_variation_002.txt"
+      }
+    ]
+
+[2026-06-05T13:33:59.869182+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_started elapsed_ms=34.608
+  group: electronically_signed_provider.Nurse's Signature
+  variant: Nurse's Signature
+
+[2026-06-05T13:33:59.869232+00:00] file_id=sample_ocr_encounters_input.json event=keyword_analyzed elapsed_ms=34.659
+  keyword: Nurse's Signature
+  analyzed_terms:
+    [
+      "nurse",
+      "signature"
+    ]
+  analyzed_term_count: 2
+
+[2026-06-05T13:33:59.869578+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=35.004
+  keyword: Nurse's Signature
+  term: nurse
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "nurse"
+    ]
+  expanded_term_count: 1
+
+[2026-06-05T13:33:59.870145+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=35.571
+  keyword: Nurse's Signature
+  term: signature
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "signature"
+    ]
+  expanded_term_count: 1
+
+[2026-06-05T13:33:59.870157+00:00] file_id=sample_ocr_encounters_input.json event=whoosh_query_built elapsed_ms=35.584
+  keyword: Nurse's Signature
+  query_type: SpanNear2
+  query: SpanNear2([Term('content', 'nurse'), Term('content', 'signature')], slop=5, ordered=False, mindist=1)
+  slop: 5
+  ordered: False
+
+[2026-06-05T13:33:59.870238+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=35.664
+  group: electronically_signed_provider.Nurse's Signature
+  variant: Nurse's Signature
+  doc_id: ENC_TYPO_AND_VARIATION_002::page_10::4
+  encounter_id: ENC_TYPO_AND_VARIATION_002
+  page_number: 10
+  file_path: enc_typo_and_variation_002.txt
+
+[2026-06-05T13:33:59.870244+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_finished elapsed_ms=35.67
+  group: electronically_signed_provider.Nurse's Signature
+  variant: Nurse's Signature
+  duration_ms: 1.062
+  hit_count: 1
+  added_match_count: 1
+  duplicate_match_count: 0
+  hits:
+    [
+      {
+        "doc_id": "ENC_TYPO_AND_VARIATION_002::page_10::4",
+        "encounter_id": "ENC_TYPO_AND_VARIATION_002",
+        "page_number": 10,
+        "file_path": "enc_typo_and_variation_002.txt"
+      }
+    ]
+
+[2026-06-05T13:33:59.870256+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_started elapsed_ms=35.682
+  group: electronically_signed_provider.Clinician Signature
+  variant: Clinician Signature
+
+[2026-06-05T13:33:59.870300+00:00] file_id=sample_ocr_encounters_input.json event=keyword_analyzed elapsed_ms=35.726
+  keyword: Clinician Signature
+  analyzed_terms:
+    [
+      "clinician",
+      "signature"
+    ]
+  analyzed_term_count: 2
+
+[2026-06-05T13:33:59.870871+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=36.298
+  keyword: Clinician Signature
+  term: clinician
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "clinician"
+    ]
+  expanded_term_count: 1
+
+[2026-06-05T13:33:59.871437+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=36.864
+  keyword: Clinician Signature
+  term: signature
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "signature"
+    ]
+  expanded_term_count: 1
+
+[2026-06-05T13:33:59.871449+00:00] file_id=sample_ocr_encounters_input.json event=whoosh_query_built elapsed_ms=36.875
+  keyword: Clinician Signature
+  query_type: SpanNear2
+  query: SpanNear2([Term('content', 'clinician'), Term('content', 'signature')], slop=5, ordered=False, mindist=1)
+  slop: 5
+  ordered: False
+
+[2026-06-05T13:33:59.871521+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=36.947
+  group: electronically_signed_provider.Clinician Signature
+  variant: Clinician Signature
+  doc_id: ENC_WRONG_ORDER_001::page_1::1
+  encounter_id: ENC_WRONG_ORDER_001
+  page_number: 1
+  file_path: enc_wrong_order_001.txt
+
+[2026-06-05T13:33:59.871527+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_finished elapsed_ms=36.953
+  group: electronically_signed_provider.Clinician Signature
+  variant: Clinician Signature
+  duration_ms: 1.27
+  hit_count: 1
+  added_match_count: 1
+  duplicate_match_count: 0
+  hits:
+    [
+      {
+        "doc_id": "ENC_WRONG_ORDER_001::page_1::1",
+        "encounter_id": "ENC_WRONG_ORDER_001",
+        "page_number": 1,
+        "file_path": "enc_wrong_order_001.txt"
+      }
+    ]
+
+[2026-06-05T13:33:59.871539+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_started elapsed_ms=36.965
+  group: electronically_signed_provider.Attending Physician
+  variant: Attending Physician
+
+[2026-06-05T13:33:59.871585+00:00] file_id=sample_ocr_encounters_input.json event=keyword_analyzed elapsed_ms=37.011
+  keyword: Attending Physician
+  analyzed_terms:
+    [
+      "attending",
+      "physician"
+    ]
+  analyzed_term_count: 2
+
+[2026-06-05T13:33:59.872083+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=37.509
+  keyword: Attending Physician
+  term: attending
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "attending"
+    ]
+  expanded_term_count: 1
+
+[2026-06-05T13:33:59.872703+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=38.13
+  keyword: Attending Physician
+  term: physician
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "physician"
+    ]
+  expanded_term_count: 1
+
+[2026-06-05T13:33:59.872725+00:00] file_id=sample_ocr_encounters_input.json event=whoosh_query_built elapsed_ms=38.152
+  keyword: Attending Physician
+  query_type: SpanNear2
+  query: SpanNear2([Term('content', 'attending'), Term('content', 'physician')], slop=5, ordered=False, mindist=1)
+  slop: 5
+  ordered: False
+
+[2026-06-05T13:33:59.872823+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=38.25
+  group: electronically_signed_provider.Attending Physician
+  variant: Attending Physician
+  doc_id: ENC_WRONG_ORDER_001::page_1::1
+  encounter_id: ENC_WRONG_ORDER_001
+  page_number: 1
+  file_path: enc_wrong_order_001.txt
+
+[2026-06-05T13:33:59.872832+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_finished elapsed_ms=38.258
+  group: electronically_signed_provider.Attending Physician
+  variant: Attending Physician
+  duration_ms: 1.292
+  hit_count: 1
+  added_match_count: 1
+  duplicate_match_count: 0
+  hits:
+    [
+      {
+        "doc_id": "ENC_WRONG_ORDER_001::page_1::1",
+        "encounter_id": "ENC_WRONG_ORDER_001",
+        "page_number": 1,
+        "file_path": "enc_wrong_order_001.txt"
+      }
+    ]
+
+[2026-06-05T13:33:59.872848+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_started elapsed_ms=38.274
+  group: electronically_signed_provider.Physical Therapist
+  variant: Physical Therapist
+
+[2026-06-05T13:33:59.872902+00:00] file_id=sample_ocr_encounters_input.json event=keyword_analyzed elapsed_ms=38.328
+  keyword: Physical Therapist
+  analyzed_terms:
+    [
+      "physical",
+      "therapist"
+    ]
+  analyzed_term_count: 2
+
+[2026-06-05T13:33:59.873396+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=38.822
+  keyword: Physical Therapist
+  term: physical
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "physical"
+    ]
+  expanded_term_count: 1
+
+[2026-06-05T13:33:59.873886+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=39.313
+  keyword: Physical Therapist
+  term: therapist
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "therapist"
+    ]
+  expanded_term_count: 1
+
+[2026-06-05T13:33:59.873899+00:00] file_id=sample_ocr_encounters_input.json event=whoosh_query_built elapsed_ms=39.325
+  keyword: Physical Therapist
+  query_type: SpanNear2
+  query: SpanNear2([Term('content', 'physical'), Term('content', 'therapist')], slop=5, ordered=False, mindist=1)
+  slop: 5
+  ordered: False
+
+[2026-06-05T13:33:59.873982+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=39.409
+  group: electronically_signed_provider.Physical Therapist
+  variant: Physical Therapist
+  doc_id: ENC_TYPO_AND_VARIATION_002::page_12::6
+  encounter_id: ENC_TYPO_AND_VARIATION_002
+  page_number: 12
+  file_path: enc_typo_and_variation_002.txt
+
+[2026-06-05T13:33:59.873990+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_finished elapsed_ms=39.416
+  group: electronically_signed_provider.Physical Therapist
+  variant: Physical Therapist
+  duration_ms: 1.141
+  hit_count: 1
+  added_match_count: 1
+  duplicate_match_count: 0
+  hits:
+    [
+      {
+        "doc_id": "ENC_TYPO_AND_VARIATION_002::page_12::6",
+        "encounter_id": "ENC_TYPO_AND_VARIATION_002",
+        "page_number": 12,
+        "file_path": "enc_typo_and_variation_002.txt"
+      }
+    ]
+
+[2026-06-05T13:33:59.874003+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_started elapsed_ms=39.429
+  group: electronically_signed_provider.Therapist Signature
+  variant: Therapist Signature
+
+[2026-06-05T13:33:59.874056+00:00] file_id=sample_ocr_encounters_input.json event=keyword_analyzed elapsed_ms=39.482
+  keyword: Therapist Signature
+  analyzed_terms:
+    [
+      "therapist",
+      "signature"
+    ]
+  analyzed_term_count: 2
+
+[2026-06-05T13:33:59.874542+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=39.968
+  keyword: Therapist Signature
+  term: therapist
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "therapist"
+    ]
+  expanded_term_count: 1
+
+[2026-06-05T13:33:59.875083+00:00] file_id=sample_ocr_encounters_input.json event=fuzzy_term_expanded elapsed_ms=40.509
+  keyword: Therapist Signature
+  term: signature
+  edit_distance: 1
+  prefixlength: 0
+  expanded_terms:
+    [
+      "signature"
+    ]
+  expanded_term_count: 1
+
+[2026-06-05T13:33:59.875095+00:00] file_id=sample_ocr_encounters_input.json event=whoosh_query_built elapsed_ms=40.521
+  keyword: Therapist Signature
+  query_type: SpanNear2
+  query: SpanNear2([Term('content', 'therapist'), Term('content', 'signature')], slop=5, ordered=False, mindist=1)
+  slop: 5
+  ordered: False
+
+[2026-06-05T13:33:59.875170+00:00] file_id=sample_ocr_encounters_input.json event=match_added elapsed_ms=40.597
+  group: electronically_signed_provider.Therapist Signature
+  variant: Therapist Signature
+  doc_id: ENC_TYPO_AND_VARIATION_002::page_12::6
+  encounter_id: ENC_TYPO_AND_VARIATION_002
+  page_number: 12
+  file_path: enc_typo_and_variation_002.txt
+
+[2026-06-05T13:33:59.875177+00:00] file_id=sample_ocr_encounters_input.json event=keyword_search_finished elapsed_ms=40.603
+  group: electronically_signed_provider.Therapist Signature
+  variant: Therapist Signature
+  duration_ms: 1.173
+  hit_count: 1
+  added_match_count: 1
+  duplicate_match_count: 0
+  hits:
+    [
+      {
+        "doc_id": "ENC_TYPO_AND_VARIATION_002::page_12::6",
+        "encounter_id": "ENC_TYPO_AND_VARIATION_002",
+        "page_number": 12,
+        "file_path": "enc_typo_and_variation_002.txt"
+      }
+    ]
+
+[2026-06-05T13:33:59.875201+00:00] file_id=sample_ocr_encounters_input.json event=keyword_detection_finished elapsed_ms=40.627
+  duration_ms: 40.437
+  output_record_count: 9
+  matched_record_count: 9
+  total_match_count: 35
+
+[2026-06-05T13:33:59.875369+00:00] file_id=sample_ocr_encounters_input.json event=temporary_index_dir_removed elapsed_ms=40.795
+  index_dir: /var/folders/zl/mq5lfk3d2n5gfncztqb7rkwc0000gn/T/whoosh_encounter_keyword_index_cgr9ux3h
+
+[2026-06-05T13:33:59.875602+00:00] file_id=sample_ocr_encounters_input.json event=output_written elapsed_ms=41.028
+  output_path: Output/sample_ocr_encounters_input_keyword_output.json
+  output_bytes: 5333
+
+[2026-06-05T13:33:59.875617+00:00] file_id=sample_ocr_encounters_input.json event=file_processing_finished elapsed_ms=41.043
+  file_id: sample_ocr_encounters_input.json
+  input_path: Input/OCR/sample_ocr_encounters_input.json
+  output_path: Output/sample_ocr_encounters_input_keyword_output.json
+  log_path: Output/Logs/sample_ocr_encounters_input.log
+  status: success
+  duration_ms: 41.041
+  output_record_count: 9
+  matched_record_count: 9
+  total_match_count: 35
+
+[2026-06-05T13:33:59.875625+00:00] file_id=sample_ocr_encounters_input.json event=log_closed elapsed_ms=41.051
+

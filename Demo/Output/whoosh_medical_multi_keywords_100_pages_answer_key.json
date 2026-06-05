@@ -1,0 +1,832 @@
+[
+  {
+    "page": 1,
+    "keyword_under_test": "electronically signed by",
+    "variation": "exact_phrase",
+    "intended_expected_detected": [
+      "electronically signed by"
+    ],
+    "target_sentence": "The discharge certification was electronically signed by the attending clinician at 08:41."
+  },
+  {
+    "page": 2,
+    "keyword_under_test": "electronically signed by",
+    "variation": "uppercase_phrase",
+    "intended_expected_detected": [
+      "electronically signed by"
+    ],
+    "target_sentence": "The discharge certification was ELECTRONICALLY SIGNED BY the attending clinician at 08:41."
+  },
+  {
+    "page": 3,
+    "keyword_under_test": "electronically signed by",
+    "variation": "reverse_order",
+    "intended_expected_detected": [
+      "electronically signed by"
+    ],
+    "target_sentence": "The certification line shows signed electronically by the attending clinician after the chart was finalized."
+  },
+  {
+    "page": 4,
+    "keyword_under_test": "electronically signed by",
+    "variation": "one_typo_first_term",
+    "intended_expected_detected": [
+      "electronically signed by"
+    ],
+    "target_sentence": "The discharge certification was electronicaly signed by the attending clinician at 08:41."
+  },
+  {
+    "page": 5,
+    "keyword_under_test": "electronically signed by",
+    "variation": "one_typo_key_term",
+    "intended_expected_detected": [
+      "electronically signed by"
+    ],
+    "target_sentence": "The discharge certification was electronically signad by the attending clinician at 08:41."
+  },
+  {
+    "page": 6,
+    "keyword_under_test": "electronically signed by",
+    "variation": "punctuation_between_terms",
+    "intended_expected_detected": [
+      "electronically signed by"
+    ],
+    "target_sentence": "The discharge certification was electronically, signed by the attending clinician at 08:41."
+  },
+  {
+    "page": 7,
+    "keyword_under_test": "electronically signed by",
+    "variation": "line_break_between_terms",
+    "intended_expected_detected": [
+      "electronically signed by"
+    ],
+    "target_sentence": "The discharge certification was electronically\nsigned by the attending clinician at 08:41."
+  },
+  {
+    "page": 8,
+    "keyword_under_test": "electronically signed by",
+    "variation": "hyphenated_terms",
+    "intended_expected_detected": [
+      "electronically signed by"
+    ],
+    "target_sentence": "The discharge certification was electronically-signed by the attending clinician at 08:41."
+  },
+  {
+    "page": 9,
+    "keyword_under_test": "electronically signed by",
+    "variation": "one_extra_word_between_terms",
+    "intended_expected_detected": [
+      "electronically signed by"
+    ],
+    "target_sentence": "The discharge certification was electronically verified signed by the attending clinician at 08:41."
+  },
+  {
+    "page": 10,
+    "keyword_under_test": "electronically signed by",
+    "variation": "few_extra_words_within_slop",
+    "intended_expected_detected": [
+      "electronically signed by"
+    ],
+    "target_sentence": "The discharge certification was electronically securely verified and signed by the attending clinician."
+  },
+  {
+    "page": 11,
+    "keyword_under_test": "electronically signed by",
+    "variation": "reverse_order_with_extra_word",
+    "intended_expected_detected": [
+      "electronically signed by"
+    ],
+    "target_sentence": "The certification entry was signed promptly electronically by the attending clinician."
+  },
+  {
+    "page": 12,
+    "keyword_under_test": "electronically signed by",
+    "variation": "multiple_one_char_typos",
+    "intended_expected_detected": [
+      "electronically signed by"
+    ],
+    "target_sentence": "The discharge certification was electronicaly signad by the attending clinician at 08:41."
+  },
+  {
+    "page": 13,
+    "keyword_under_test": "electronically signed by",
+    "variation": "comma_slash_style",
+    "intended_expected_detected": [
+      "electronically signed by"
+    ],
+    "target_sentence": "The discharge certification was electronically / signed by the attending clinician at 08:41."
+  },
+  {
+    "page": 14,
+    "keyword_under_test": "electronically signed by",
+    "variation": "too_many_words_between_terms",
+    "intended_expected_detected": [],
+    "target_sentence": "The discharge certification was electronically after medication reconciliation discharge teaching family discussion pharmacy confirmation transport planning and signed by the attending clinician."
+  },
+  {
+    "page": 15,
+    "keyword_under_test": "electronically signed by",
+    "variation": "terms_far_apart_same_page",
+    "intended_expected_detected": [],
+    "target_sentence": "The workflow indicator says electronically in the chart header. Several sections later the clinician completed the attestation and signed the discharge certification."
+  },
+  {
+    "page": 16,
+    "keyword_under_test": "electronically signed by",
+    "variation": "missing_one_required_term",
+    "intended_expected_detected": [],
+    "target_sentence": "The discharge certification was signed by the attending clinician at 08:41."
+  },
+  {
+    "page": 17,
+    "keyword_under_test": "electronically signed by",
+    "variation": "merged_ocr_token",
+    "intended_expected_detected": [],
+    "target_sentence": "The OCR text shows electronicallysignedby the attending clinician at 08:41."
+  },
+  {
+    "page": 18,
+    "keyword_under_test": "electronically signed by",
+    "variation": "prefix_merged_ocr_token",
+    "intended_expected_detected": [],
+    "target_sentence": "The OCR text shows xxelectronically signed by the attending clinician at 08:41."
+  },
+  {
+    "page": 19,
+    "keyword_under_test": "electronically signed by",
+    "variation": "split_ocr_token",
+    "intended_expected_detected": [],
+    "target_sentence": "The OCR text shows electro nically signed by the attending clinician at 08:41."
+  },
+  {
+    "page": 20,
+    "keyword_under_test": "electronically signed by",
+    "variation": "semantic_only_no_exact_terms",
+    "intended_expected_detected": [],
+    "target_sentence": "The clinician authenticated the discharge certification through the secure chart system at 08:41."
+  },
+  {
+    "page": 21,
+    "keyword_under_test": "digitally signed by",
+    "variation": "exact_phrase",
+    "intended_expected_detected": [
+      "digitally signed by"
+    ],
+    "target_sentence": "The imaging attestation was digitally signed by the radiology provider before release."
+  },
+  {
+    "page": 22,
+    "keyword_under_test": "digitally signed by",
+    "variation": "uppercase_phrase",
+    "intended_expected_detected": [
+      "digitally signed by"
+    ],
+    "target_sentence": "The imaging attestation was DIGITALLY SIGNED BY the radiology provider before release."
+  },
+  {
+    "page": 23,
+    "keyword_under_test": "digitally signed by",
+    "variation": "reverse_order",
+    "intended_expected_detected": [
+      "digitally signed by"
+    ],
+    "target_sentence": "The imaging attestation line shows signed digitally by the radiology provider before release."
+  },
+  {
+    "page": 24,
+    "keyword_under_test": "digitally signed by",
+    "variation": "one_typo_first_term",
+    "intended_expected_detected": [
+      "digitally signed by"
+    ],
+    "target_sentence": "The imaging attestation was digitaly signed by the radiology provider before release."
+  },
+  {
+    "page": 25,
+    "keyword_under_test": "digitally signed by",
+    "variation": "one_typo_key_term",
+    "intended_expected_detected": [
+      "digitally signed by"
+    ],
+    "target_sentence": "The imaging attestation was digitally signad by the radiology provider before release."
+  },
+  {
+    "page": 26,
+    "keyword_under_test": "digitally signed by",
+    "variation": "punctuation_between_terms",
+    "intended_expected_detected": [
+      "digitally signed by"
+    ],
+    "target_sentence": "The imaging attestation was digitally, signed by the radiology provider before release."
+  },
+  {
+    "page": 27,
+    "keyword_under_test": "digitally signed by",
+    "variation": "line_break_between_terms",
+    "intended_expected_detected": [
+      "digitally signed by"
+    ],
+    "target_sentence": "The imaging attestation was digitally\nsigned by the radiology provider before release."
+  },
+  {
+    "page": 28,
+    "keyword_under_test": "digitally signed by",
+    "variation": "hyphenated_terms",
+    "intended_expected_detected": [
+      "digitally signed by"
+    ],
+    "target_sentence": "The imaging attestation was digitally-signed by the radiology provider before release."
+  },
+  {
+    "page": 29,
+    "keyword_under_test": "digitally signed by",
+    "variation": "one_extra_word_between_terms",
+    "intended_expected_detected": [
+      "digitally signed by"
+    ],
+    "target_sentence": "The imaging attestation was digitally verified signed by the radiology provider before release."
+  },
+  {
+    "page": 30,
+    "keyword_under_test": "digitally signed by",
+    "variation": "few_extra_words_within_slop",
+    "intended_expected_detected": [
+      "digitally signed by"
+    ],
+    "target_sentence": "The imaging attestation was digitally securely verified and signed by the radiology provider."
+  },
+  {
+    "page": 31,
+    "keyword_under_test": "digitally signed by",
+    "variation": "reverse_order_with_extra_word",
+    "intended_expected_detected": [
+      "digitally signed by"
+    ],
+    "target_sentence": "The attestation was signed promptly digitally by the radiology provider."
+  },
+  {
+    "page": 32,
+    "keyword_under_test": "digitally signed by",
+    "variation": "multiple_one_char_typos",
+    "intended_expected_detected": [
+      "digitally signed by"
+    ],
+    "target_sentence": "The imaging attestation was digitaly signad by the radiology provider before release."
+  },
+  {
+    "page": 33,
+    "keyword_under_test": "digitally signed by",
+    "variation": "comma_slash_style",
+    "intended_expected_detected": [
+      "digitally signed by"
+    ],
+    "target_sentence": "The imaging attestation was digitally / signed by the radiology provider before release."
+  },
+  {
+    "page": 34,
+    "keyword_under_test": "digitally signed by",
+    "variation": "too_many_words_between_terms",
+    "intended_expected_detected": [],
+    "target_sentence": "The imaging attestation was digitally after image review comparison measurements communication confirmation quality check routing finalization and signed by the radiology provider."
+  },
+  {
+    "page": 35,
+    "keyword_under_test": "digitally signed by",
+    "variation": "terms_far_apart_same_page",
+    "intended_expected_detected": [],
+    "target_sentence": "The workflow indicator says digitally in the header. Several sections later the radiology provider completed the attestation and signed the imaging result."
+  },
+  {
+    "page": 36,
+    "keyword_under_test": "digitally signed by",
+    "variation": "missing_one_required_term",
+    "intended_expected_detected": [],
+    "target_sentence": "The imaging attestation was signed by the radiology provider before release."
+  },
+  {
+    "page": 37,
+    "keyword_under_test": "digitally signed by",
+    "variation": "merged_ocr_token",
+    "intended_expected_detected": [],
+    "target_sentence": "The OCR text shows digitallysignedby the radiology provider before release."
+  },
+  {
+    "page": 38,
+    "keyword_under_test": "digitally signed by",
+    "variation": "prefix_merged_ocr_token",
+    "intended_expected_detected": [],
+    "target_sentence": "The OCR text shows xxdigitally signed by the radiology provider before release."
+  },
+  {
+    "page": 39,
+    "keyword_under_test": "digitally signed by",
+    "variation": "split_ocr_token",
+    "intended_expected_detected": [],
+    "target_sentence": "The OCR text shows digi tally signed by the radiology provider before release."
+  },
+  {
+    "page": 40,
+    "keyword_under_test": "digitally signed by",
+    "variation": "semantic_only_no_exact_terms",
+    "intended_expected_detected": [],
+    "target_sentence": "The radiology provider authenticated the imaging result through the secure chart system before release."
+  },
+  {
+    "page": 41,
+    "keyword_under_test": "reported and signed by",
+    "variation": "exact_phrase",
+    "intended_expected_detected": [
+      "reported and signed by"
+    ],
+    "target_sentence": "The laboratory interpretation was reported and signed by the pathologist at 14:32."
+  },
+  {
+    "page": 42,
+    "keyword_under_test": "reported and signed by",
+    "variation": "uppercase_phrase",
+    "intended_expected_detected": [
+      "reported and signed by"
+    ],
+    "target_sentence": "The laboratory interpretation was REPORTED AND SIGNED BY the pathologist at 14:32."
+  },
+  {
+    "page": 43,
+    "keyword_under_test": "reported and signed by",
+    "variation": "reverse_order",
+    "intended_expected_detected": [
+      "reported and signed by"
+    ],
+    "target_sentence": "The laboratory interpretation was signed and reported by the pathologist at 14:32."
+  },
+  {
+    "page": 44,
+    "keyword_under_test": "reported and signed by",
+    "variation": "one_typo_first_term",
+    "intended_expected_detected": [
+      "reported and signed by"
+    ],
+    "target_sentence": "The laboratory interpretation was reportd and signed by the pathologist at 14:32."
+  },
+  {
+    "page": 45,
+    "keyword_under_test": "reported and signed by",
+    "variation": "one_typo_key_term",
+    "intended_expected_detected": [
+      "reported and signed by"
+    ],
+    "target_sentence": "The laboratory interpretation was reported and signad by the pathologist at 14:32."
+  },
+  {
+    "page": 46,
+    "keyword_under_test": "reported and signed by",
+    "variation": "punctuation_between_terms",
+    "intended_expected_detected": [
+      "reported and signed by"
+    ],
+    "target_sentence": "The laboratory interpretation was reported, and signed by the pathologist at 14:32."
+  },
+  {
+    "page": 47,
+    "keyword_under_test": "reported and signed by",
+    "variation": "line_break_between_terms",
+    "intended_expected_detected": [
+      "reported and signed by"
+    ],
+    "target_sentence": "The laboratory interpretation was reported\nand signed by the pathologist at 14:32."
+  },
+  {
+    "page": 48,
+    "keyword_under_test": "reported and signed by",
+    "variation": "hyphenated_terms",
+    "intended_expected_detected": [
+      "reported and signed by"
+    ],
+    "target_sentence": "The laboratory interpretation was reported-and-signed by the pathologist at 14:32."
+  },
+  {
+    "page": 49,
+    "keyword_under_test": "reported and signed by",
+    "variation": "one_extra_word_between_terms",
+    "intended_expected_detected": [
+      "reported and signed by"
+    ],
+    "target_sentence": "The laboratory interpretation was reported after signed by the pathologist at 14:32."
+  },
+  {
+    "page": 50,
+    "keyword_under_test": "reported and signed by",
+    "variation": "few_extra_words_within_slop",
+    "intended_expected_detected": [
+      "reported and signed by"
+    ],
+    "target_sentence": "The laboratory interpretation was reported after verification and signed by the pathologist."
+  },
+  {
+    "page": 51,
+    "keyword_under_test": "reported and signed by",
+    "variation": "reverse_order_with_extra_word",
+    "intended_expected_detected": [
+      "reported and signed by"
+    ],
+    "target_sentence": "The interpretation was signed promptly and reported by the pathologist."
+  },
+  {
+    "page": 52,
+    "keyword_under_test": "reported and signed by",
+    "variation": "multiple_one_char_typos",
+    "intended_expected_detected": [
+      "reported and signed by"
+    ],
+    "target_sentence": "The laboratory interpretation was reportd and signad by the pathologist at 14:32."
+  },
+  {
+    "page": 53,
+    "keyword_under_test": "reported and signed by",
+    "variation": "comma_slash_style",
+    "intended_expected_detected": [
+      "reported and signed by"
+    ],
+    "target_sentence": "The laboratory interpretation was reported / signed by the pathologist at 14:32."
+  },
+  {
+    "page": 54,
+    "keyword_under_test": "reported and signed by",
+    "variation": "too_many_words_between_terms",
+    "intended_expected_detected": [],
+    "target_sentence": "The laboratory interpretation was reported after specimen validation morphology correlation accession reconciliation supervisor confirmation final formatting distribution and signed by the pathologist."
+  },
+  {
+    "page": 55,
+    "keyword_under_test": "reported and signed by",
+    "variation": "terms_far_apart_same_page",
+    "intended_expected_detected": [],
+    "target_sentence": "The header says the case was reported for clinical correlation. Several sections later the pathologist completed the attestation and signed the interpretation."
+  },
+  {
+    "page": 56,
+    "keyword_under_test": "reported and signed by",
+    "variation": "missing_one_required_term",
+    "intended_expected_detected": [],
+    "target_sentence": "The laboratory interpretation was signed by the pathologist at 14:32."
+  },
+  {
+    "page": 57,
+    "keyword_under_test": "reported and signed by",
+    "variation": "merged_ocr_token",
+    "intended_expected_detected": [],
+    "target_sentence": "The OCR text shows reportedandsignedby the pathologist at 14:32."
+  },
+  {
+    "page": 58,
+    "keyword_under_test": "reported and signed by",
+    "variation": "prefix_merged_ocr_token",
+    "intended_expected_detected": [],
+    "target_sentence": "The OCR text shows xxreported and signed by the pathologist at 14:32."
+  },
+  {
+    "page": 59,
+    "keyword_under_test": "reported and signed by",
+    "variation": "split_ocr_token",
+    "intended_expected_detected": [],
+    "target_sentence": "The OCR text shows repo rted and signed by the pathologist at 14:32."
+  },
+  {
+    "page": 60,
+    "keyword_under_test": "reported and signed by",
+    "variation": "semantic_only_no_exact_terms",
+    "intended_expected_detected": [],
+    "target_sentence": "The pathologist finalized the laboratory interpretation in the secure chart system at 14:32."
+  },
+  {
+    "page": 61,
+    "keyword_under_test": "visit note addendum added by",
+    "variation": "exact_phrase",
+    "intended_expected_detected": [
+      "visit note addendum added by"
+    ],
+    "target_sentence": "The visit note addendum added by the nurse practitioner clarified the medication dose."
+  },
+  {
+    "page": 62,
+    "keyword_under_test": "visit note addendum added by",
+    "variation": "uppercase_phrase",
+    "intended_expected_detected": [
+      "visit note addendum added by"
+    ],
+    "target_sentence": "The VISIT NOTE ADDENDUM ADDED BY the nurse practitioner clarified the medication dose."
+  },
+  {
+    "page": 63,
+    "keyword_under_test": "visit note addendum added by",
+    "variation": "reverse_order",
+    "intended_expected_detected": [
+      "visit note addendum added by"
+    ],
+    "target_sentence": "The entry shows added addendum note visit by the nurse practitioner for medication dose clarification."
+  },
+  {
+    "page": 64,
+    "keyword_under_test": "visit note addendum added by",
+    "variation": "one_typo_first_term",
+    "intended_expected_detected": [
+      "visit note addendum added by"
+    ],
+    "target_sentence": "The vist note addendum added by the nurse practitioner clarified the medication dose."
+  },
+  {
+    "page": 65,
+    "keyword_under_test": "visit note addendum added by",
+    "variation": "one_typo_key_term",
+    "intended_expected_detected": [
+      "visit note addendum added by"
+    ],
+    "target_sentence": "The visit note addndum added by the nurse practitioner clarified the medication dose."
+  },
+  {
+    "page": 66,
+    "keyword_under_test": "visit note addendum added by",
+    "variation": "punctuation_between_terms",
+    "intended_expected_detected": [
+      "visit note addendum added by"
+    ],
+    "target_sentence": "The visit note, addendum added by the nurse practitioner clarified the medication dose."
+  },
+  {
+    "page": 67,
+    "keyword_under_test": "visit note addendum added by",
+    "variation": "line_break_between_terms",
+    "intended_expected_detected": [
+      "visit note addendum added by"
+    ],
+    "target_sentence": "The visit note addendum\nadded by the nurse practitioner clarified the medication dose."
+  },
+  {
+    "page": 68,
+    "keyword_under_test": "visit note addendum added by",
+    "variation": "hyphenated_terms",
+    "intended_expected_detected": [
+      "visit note addendum added by"
+    ],
+    "target_sentence": "The visit-note-addendum added by the nurse practitioner clarified the medication dose."
+  },
+  {
+    "page": 69,
+    "keyword_under_test": "visit note addendum added by",
+    "variation": "one_extra_word_between_terms",
+    "intended_expected_detected": [
+      "visit note addendum added by"
+    ],
+    "target_sentence": "The visit clinical note addendum added by the nurse practitioner clarified the medication dose."
+  },
+  {
+    "page": 70,
+    "keyword_under_test": "visit note addendum added by",
+    "variation": "few_extra_words_within_slop",
+    "intended_expected_detected": [
+      "visit note addendum added by"
+    ],
+    "target_sentence": "The visit detailed note addendum carefully added by the nurse practitioner clarified the dose."
+  },
+  {
+    "page": 71,
+    "keyword_under_test": "visit note addendum added by",
+    "variation": "reverse_order_with_extra_word",
+    "intended_expected_detected": [
+      "visit note addendum added by"
+    ],
+    "target_sentence": "The entry shows added promptly addendum note visit by the nurse practitioner for dose clarification."
+  },
+  {
+    "page": 72,
+    "keyword_under_test": "visit note addendum added by",
+    "variation": "multiple_one_char_typos",
+    "intended_expected_detected": [
+      "visit note addendum added by"
+    ],
+    "target_sentence": "The vist note addndum addad by the nurse practitioner clarified the medication dose."
+  },
+  {
+    "page": 73,
+    "keyword_under_test": "visit note addendum added by",
+    "variation": "comma_slash_style",
+    "intended_expected_detected": [
+      "visit note addendum added by"
+    ],
+    "target_sentence": "The visit / note / addendum / added by the nurse practitioner clarified the medication dose."
+  },
+  {
+    "page": 74,
+    "keyword_under_test": "visit note addendum added by",
+    "variation": "too_many_words_between_terms",
+    "intended_expected_detected": [],
+    "target_sentence": "The visit after triage reconciliation counseling pharmacy communication scheduling safety education discharge planning note addendum added by the nurse practitioner clarified the medication dose."
+  },
+  {
+    "page": 75,
+    "keyword_under_test": "visit note addendum added by",
+    "variation": "terms_far_apart_same_page",
+    "intended_expected_detected": [],
+    "target_sentence": "The encounter type says visit near the top of the page. The clinical narrative appears later. At the end, a separate note addendum added by the nurse practitioner clarified the medication dose."
+  },
+  {
+    "page": 76,
+    "keyword_under_test": "visit note addendum added by",
+    "variation": "missing_one_required_term",
+    "intended_expected_detected": [],
+    "target_sentence": "The visit note addendum by the nurse practitioner clarified the medication dose."
+  },
+  {
+    "page": 77,
+    "keyword_under_test": "visit note addendum added by",
+    "variation": "merged_ocr_token",
+    "intended_expected_detected": [],
+    "target_sentence": "The OCR text shows visitnoteaddendumaddedby the nurse practitioner clarified the medication dose."
+  },
+  {
+    "page": 78,
+    "keyword_under_test": "visit note addendum added by",
+    "variation": "prefix_merged_ocr_token",
+    "intended_expected_detected": [],
+    "target_sentence": "The OCR text shows xxvisit note addendum added by the nurse practitioner clarified the medication dose."
+  },
+  {
+    "page": 79,
+    "keyword_under_test": "visit note addendum added by",
+    "variation": "split_ocr_token",
+    "intended_expected_detected": [],
+    "target_sentence": "The OCR text shows vi sit note addendum added by the nurse practitioner clarified the medication dose."
+  },
+  {
+    "page": 80,
+    "keyword_under_test": "visit note addendum added by",
+    "variation": "semantic_only_no_exact_terms",
+    "intended_expected_detected": [],
+    "target_sentence": "The nurse practitioner entered an additional clarification in the clinical record about the medication dose."
+  },
+  {
+    "page": 81,
+    "keyword_under_test": "last reviewed by",
+    "variation": "exact_phrase",
+    "intended_expected_detected": [
+      "last reviewed by"
+    ],
+    "target_sentence": "The medication reconciliation was last reviewed by the clinical pharmacist during discharge planning."
+  },
+  {
+    "page": 82,
+    "keyword_under_test": "last reviewed by",
+    "variation": "uppercase_phrase",
+    "intended_expected_detected": [
+      "last reviewed by"
+    ],
+    "target_sentence": "The medication reconciliation was LAST REVIEWED BY the clinical pharmacist during discharge planning."
+  },
+  {
+    "page": 83,
+    "keyword_under_test": "last reviewed by",
+    "variation": "reverse_order",
+    "intended_expected_detected": [
+      "last reviewed by"
+    ],
+    "target_sentence": "The medication reconciliation was reviewed last by the clinical pharmacist during discharge planning."
+  },
+  {
+    "page": 84,
+    "keyword_under_test": "last reviewed by",
+    "variation": "one_typo_first_term",
+    "intended_expected_detected": [
+      "last reviewed by"
+    ],
+    "target_sentence": "The medication reconciliation was lst reviewed by the clinical pharmacist during discharge planning."
+  },
+  {
+    "page": 85,
+    "keyword_under_test": "last reviewed by",
+    "variation": "one_typo_key_term",
+    "intended_expected_detected": [
+      "last reviewed by"
+    ],
+    "target_sentence": "The medication reconciliation was last reveiwed by the clinical pharmacist during discharge planning."
+  },
+  {
+    "page": 86,
+    "keyword_under_test": "last reviewed by",
+    "variation": "punctuation_between_terms",
+    "intended_expected_detected": [
+      "last reviewed by"
+    ],
+    "target_sentence": "The medication reconciliation was last, reviewed by the clinical pharmacist during discharge planning."
+  },
+  {
+    "page": 87,
+    "keyword_under_test": "last reviewed by",
+    "variation": "line_break_between_terms",
+    "intended_expected_detected": [
+      "last reviewed by"
+    ],
+    "target_sentence": "The medication reconciliation was last\nreviewed by the clinical pharmacist during discharge planning."
+  },
+  {
+    "page": 88,
+    "keyword_under_test": "last reviewed by",
+    "variation": "hyphenated_terms",
+    "intended_expected_detected": [
+      "last reviewed by"
+    ],
+    "target_sentence": "The medication reconciliation was last-reviewed by the clinical pharmacist during discharge planning."
+  },
+  {
+    "page": 89,
+    "keyword_under_test": "last reviewed by",
+    "variation": "one_extra_word_between_terms",
+    "intended_expected_detected": [
+      "last reviewed by"
+    ],
+    "target_sentence": "The medication reconciliation was last carefully reviewed by the clinical pharmacist during discharge planning."
+  },
+  {
+    "page": 90,
+    "keyword_under_test": "last reviewed by",
+    "variation": "few_extra_words_within_slop",
+    "intended_expected_detected": [
+      "last reviewed by"
+    ],
+    "target_sentence": "The medication reconciliation was last carefully checked and reviewed by the clinical pharmacist."
+  },
+  {
+    "page": 91,
+    "keyword_under_test": "last reviewed by",
+    "variation": "reverse_order_with_extra_word",
+    "intended_expected_detected": [
+      "last reviewed by"
+    ],
+    "target_sentence": "The medication reconciliation was reviewed promptly last by the clinical pharmacist."
+  },
+  {
+    "page": 92,
+    "keyword_under_test": "last reviewed by",
+    "variation": "multiple_one_char_typos",
+    "intended_expected_detected": [
+      "last reviewed by"
+    ],
+    "target_sentence": "The medication reconciliation was lst reveiwed by the clinical pharmacist during discharge planning."
+  },
+  {
+    "page": 93,
+    "keyword_under_test": "last reviewed by",
+    "variation": "comma_slash_style",
+    "intended_expected_detected": [
+      "last reviewed by"
+    ],
+    "target_sentence": "The medication reconciliation was last / reviewed by the clinical pharmacist during discharge planning."
+  },
+  {
+    "page": 94,
+    "keyword_under_test": "last reviewed by",
+    "variation": "too_many_words_between_terms",
+    "intended_expected_detected": [],
+    "target_sentence": "The medication reconciliation was last after allergy confirmation renal adjustment duplicate therapy evaluation refill status counseling interaction screening and reviewed by the clinical pharmacist."
+  },
+  {
+    "page": 95,
+    "keyword_under_test": "last reviewed by",
+    "variation": "terms_far_apart_same_page",
+    "intended_expected_detected": [],
+    "target_sentence": "The section header mentions last medication reconciliation activity. Several sections later the clinical pharmacist reviewed the active medication list for discharge planning."
+  },
+  {
+    "page": 96,
+    "keyword_under_test": "last reviewed by",
+    "variation": "missing_one_required_term",
+    "intended_expected_detected": [],
+    "target_sentence": "The medication reconciliation was reviewed by the clinical pharmacist during discharge planning."
+  },
+  {
+    "page": 97,
+    "keyword_under_test": "last reviewed by",
+    "variation": "merged_ocr_token",
+    "intended_expected_detected": [],
+    "target_sentence": "The OCR text shows lastreviewedby the clinical pharmacist during discharge planning."
+  },
+  {
+    "page": 98,
+    "keyword_under_test": "last reviewed by",
+    "variation": "prefix_merged_ocr_token",
+    "intended_expected_detected": [],
+    "target_sentence": "The OCR text shows xxlast reviewed by the clinical pharmacist during discharge planning."
+  },
+  {
+    "page": 99,
+    "keyword_under_test": "last reviewed by",
+    "variation": "split_ocr_token",
+    "intended_expected_detected": [],
+    "target_sentence": "The OCR text shows la st reviewed by the clinical pharmacist during discharge planning."
+  },
+  {
+    "page": 100,
+    "keyword_under_test": "last reviewed by",
+    "variation": "semantic_only_no_exact_terms",
+    "intended_expected_detected": [],
+    "target_sentence": "The clinical pharmacist completed a final medication reconciliation check during discharge planning."
+  }
+]

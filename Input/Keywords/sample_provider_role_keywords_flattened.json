@@ -1,0 +1,68 @@
+{
+  "legal_authenticator.Director": [
+    "Director"
+  ],
+  "legal_authenticator.Reviewer": [
+    "Reviewer"
+  ],
+  "legal_authenticator.Authenticator": [
+    "Authenticator"
+  ],
+  "legal_authenticator.ATTEST": [
+    "ATTEST"
+  ],
+  "legal_authenticator.Author": [
+    "Author"
+  ],
+  "legal_authenticator.Cosigner": [
+    "Cosigner"
+  ],
+  "legal_authenticator.Attending": [
+    "Attending"
+  ],
+  "legal_authenticator.Legal Authenticator": [
+    "Legal Authenticator"
+  ],
+  "legal_authenticator.Last reviewed by": [
+    "Last reviewed by"
+  ],
+  "electronically_signed_provider.Electronically signed by": [
+    "Electronically signed by"
+  ],
+  "electronically_signed_provider.Digitally signed by": [
+    "Digitally signed by"
+  ],
+  "electronically_signed_provider.Reported and Signed by": [
+    "reported and Signed by"
+  ],
+  "electronically_signed_provider.Visit note addendum added by": [
+    "Visit note addendum added by"
+  ],
+  "electronically_signed_provider.Signature": [
+    "Signature"
+  ],
+  "electronically_signed_provider.Physician": [
+    "Physician"
+  ],
+  "electronically_signed_provider.Surgeon": [
+    "Surgeon"
+  ],
+  "electronically_signed_provider.Agent Signature": [
+    "Agent Signature"
+  ],
+  "electronically_signed_provider.Nurse's Signature": [
+    "Nurse's Signature"
+  ],
+  "electronically_signed_provider.Clinician Signature": [
+    "Clinician Signature"
+  ],
+  "electronically_signed_provider.Attending Physician": [
+    "Attending Physician"
+  ],
+  "electronically_signed_provider.Physical Therapist": [
+    "Physical Therapist"
+  ],
+  "electronically_signed_provider.Therapist Signature": [
+    "Therapist Signature"
+  ]
+}

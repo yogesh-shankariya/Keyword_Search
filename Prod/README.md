@@ -10,8 +10,8 @@ It supports:
 - Per-file debug logs
 - Per-file and per-keyword timing information
 - Batch summary reporting
-
-The internal keyword matching logic is not changed by the batch/logging wrapper.
+- In-script default configuration for no-argument runs
+- Optional stemming and short-keyword exact matching to reduce false positives
 
 ## Step 1: Open The Prod Folder
 
@@ -37,10 +37,28 @@ pip install Whoosh
 
 ## Script
 
-Run this script from inside the `Prod` folder:
+The default input path, output path, logs path, index path, and matching configuration live in the `CONFIG_...` block near the top of `whoosh_encounter_json_keyword_search.py`.
+
+Those paths are absolute `Path(...)` values, so you can paste the exact OCR, keyword, output, log, and index paths you want:
+
+```python
+CONFIG_OCR_JSON = Path("/absolute/path/to/ocr_json_folder")
+CONFIG_KEYWORDS_JSON = Path("/absolute/path/to/keywords.json")
+CONFIG_OUTPUT = Path("/absolute/path/to/output_folder")
+CONFIG_LOGS_DIR = Path("/absolute/path/to/logs_folder")
+CONFIG_INDEX_DIR = Path("/absolute/path/to/index_folder")
+```
+
+With those defaults, run:
 
 ```bash
 python whoosh_encounter_json_keyword_search.py
+```
+
+Or from anywhere:
+
+```bash
+python /Users/mitulkanani/Desktop/Projects/Keyword_Search/Prod/whoosh_encounter_json_keyword_search.py
 ```
 
 If the environment uses `python3` instead of `python`, replace `python` with `python3` in the commands below.
@@ -68,7 +86,7 @@ When a folder is passed, the script recursively finds all `*.json` files and pro
 
 ## Recommended Batch Run
 
-Use this command from inside the `Prod` folder to process all OCR JSON files in the OCR folder:
+The no-argument script run already uses the configured OCR folder and output locations. CLI arguments are still available when you want to override the in-script defaults:
 
 ```bash
 python whoosh_encounter_json_keyword_search.py \
@@ -214,7 +232,9 @@ Also searches `cover.text` if present in the OCR JSON.
 
 `--log-preview-chars 0`
 
-Disables OCR text previews in logs. Use this if logs should avoid storing OCR text snippets.
+Uses compact logs. With the default value `0`, logs keep timing, counts, configuration, errors, matches, and hit records, but do not write OCR page text previews, full keyword dumps, full fuzzy expansion lists, or long query strings.
+
+Set this above `0` only when you intentionally want detailed page text previews for debugging.
 
 `--stop-on-error`
 
@@ -223,6 +243,26 @@ In folder mode, stops processing after the first failed JSON file.
 `--keep-stopwords`
 
 Keeps words like `and`, `by`, `to`, and `the` during keyword search. By default, the script uses the existing recall-first mode where Whoosh removes common stop words.
+
+`--stem-words`
+
+Stems OCR and keyword terms before fuzzy matching. This helps a keyword like `Priority` match OCR forms like `priorities`, `prioritize`, `prioritized`, and `prioritizing` when used with the existing fuzzy `--edit-distance` setting.
+
+Example:
+
+```bash
+python whoosh_encounter_json_keyword_search.py \
+  --ocr-json Input/OCR/sample_ocr_encounters_input.json \
+  --keywords-json Input/Keywords/sample_provider_role_keywords_flattened.json \
+  --stem-words \
+  --edit-distance 1
+```
+
+If `--stem-words` and `--keep-stopwords` are both passed, `--stem-words` takes precedence and Whoosh's built-in `StemmingAnalyzer()` is used.
+
+`--min-fuzzy-term-length 5`
+
+Terms shorter than this value use exact matching instead of fuzzy matching. With the default value `5`, a short keyword like `STAT` must match `stat` exactly and will not fuzzy-match OCR words like `start` or `status`.
 
 ## Timing Information
 

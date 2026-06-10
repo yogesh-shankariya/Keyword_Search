@@ -14,7 +14,7 @@ from time import perf_counter
 
 try:
     from whoosh import index, query
-    from whoosh.analysis import LowercaseFilter, RegexTokenizer
+    from whoosh.analysis import LowercaseFilter, RegexTokenizer, StemmingAnalyzer
     from whoosh.fields import ID, NUMERIC, STORED, Schema, TEXT
     from whoosh.query import spans
 except ModuleNotFoundError as exc:
@@ -27,6 +27,29 @@ PAGE_TAG_RE = re.compile(
     r"<ocr_service_page_start>\s*(\d+)\s*<ocr_service_page_start>",
     flags=re.IGNORECASE,
 )
+
+# Edit this block when you want to run the script without passing CLI arguments.
+# Use absolute paths here so the script can be launched from any folder.
+CONFIG_OCR_JSON = Path("/Users/mitulkanani/Desktop/Projects/Keyword_Search/Prod/Input/OCR")
+CONFIG_KEYWORDS_JSON = Path(
+    "/Users/mitulkanani/Desktop/Projects/Keyword_Search/Prod/Input/Keywords/sample_provider_role_keywords_flattened.json"
+)
+CONFIG_OUTPUT = Path("/Users/mitulkanani/Desktop/Projects/Keyword_Search/Prod/Output")
+CONFIG_LOGS_DIR = Path("/Users/mitulkanani/Desktop/Projects/Keyword_Search/Prod/Output/Logs")
+CONFIG_INDEX_DIR = Path("/Users/mitulkanani/Desktop/Projects/Keyword_Search/Prod/Output/Index")
+
+CONFIG_SLOP = 5
+CONFIG_EDIT_DISTANCE = 1
+CONFIG_PREFIXLENGTH = 0
+CONFIG_MIN_FUZZY_TERM_LENGTH = 5
+
+CONFIG_KEEP_STOPWORDS = False
+CONFIG_STEM_WORDS = True
+CONFIG_INCLUDE_COVER = False
+CONFIG_MATCHED_ONLY = False
+CONFIG_INCLUDE_FILE_PATH = True
+CONFIG_LOG_PREVIEW_CHARS = 0
+CONFIG_STOP_ON_ERROR = False
 
 
 def utc_timestamp():
@@ -243,7 +266,17 @@ def extract_pages_from_ocr_json(ocr_json, include_cover=False):
     return page_records
 
 
-def create_or_replace_index(index_dir, keep_stopwords=False):
+def analyzer_mode(keep_stopwords=False, stem_words=False):
+    if stem_words:
+        return "stemming"
+
+    if keep_stopwords:
+        return "keep_stopwords"
+
+    return "default"
+
+
+def create_or_replace_index(index_dir, keep_stopwords=False, stem_words=False):
     """
     Creates a fresh Whoosh index.
 
@@ -254,13 +287,20 @@ def create_or_replace_index(index_dir, keep_stopwords=False):
     Strict mode:
       - pass keep_stopwords=True
       - stop words are kept using RegexTokenizer + LowercaseFilter
+
+    Stemming mode:
+      - pass stem_words=True
+      - Whoosh StemmingAnalyzer is used
+      - if keep_stopwords is also true, stemming takes precedence
     """
     if os.path.exists(index_dir):
         shutil.rmtree(index_dir)
 
     os.makedirs(index_dir, exist_ok=True)
 
-    if keep_stopwords:
+    if stem_words:
+        content_field = TEXT(stored=True, phrase=True, analyzer=StemmingAnalyzer())
+    elif keep_stopwords:
         analyzer = RegexTokenizer() | LowercaseFilter()
         content_field = TEXT(stored=True, phrase=True, analyzer=analyzer)
     else:
@@ -293,16 +333,18 @@ def index_pages(ix, page_records, logger=None, log_preview_chars=300):
             page_number=page_number,
             content=page.get("content", ""),
         )
-        log_event(
-            logger,
-            "index_page_added",
-            doc_id=doc_id,
-            encounter_id=encounter_id,
-            page_number=page_number,
-            file_path=page.get("file_path", ""),
-            content_chars=len(page.get("content", "") or ""),
-            content_preview=preview_text(page.get("content", ""), log_preview_chars),
-        )
+
+        if log_preview_chars > 0:
+            log_event(
+                logger,
+                "index_page_added",
+                doc_id=doc_id,
+                encounter_id=encounter_id,
+                page_number=page_number,
+                file_path=page.get("file_path", ""),
+                content_chars=len(page.get("content", "") or ""),
+                content_preview=preview_text(page.get("content", ""), log_preview_chars),
+            )
 
     writer.commit()
     log_event(logger, "index_commit_finished", indexed_page_count=len(page_records))
@@ -340,6 +382,8 @@ def build_fuzzy_unordered_near_all_query(
     slop=5,
     edit_distance=1,
     prefixlength=0,
+    min_fuzzy_term_length=5,
+    log_query_details=False,
     logger=None,
 ):
     """
@@ -347,16 +391,19 @@ def build_fuzzy_unordered_near_all_query(
       - all analyzed keyword terms must match
       - terms must be near each other within slop
       - order does not matter
-      - each term allows fuzzy typo tolerance using edit distance
+      - short terms use exact matching to avoid false positives
+      - longer terms allow fuzzy typo tolerance using edit distance
     """
     terms = analyze_keyword_terms(schema, fieldname, keyword)
-    log_event(
-        logger,
-        "keyword_analyzed",
-        keyword=keyword,
-        analyzed_terms=terms,
-        analyzed_term_count=len(terms),
-    )
+    if log_query_details:
+        log_event(
+            logger,
+            "keyword_analyzed",
+            keyword=keyword,
+            analyzed_terms=terms,
+            analyzed_term_count=len(terms),
+            min_fuzzy_term_length=min_fuzzy_term_length,
+        )
 
     if not terms:
         log_event(logger, "keyword_query_null", keyword=keyword, reason="no_analyzed_terms")
@@ -366,6 +413,21 @@ def build_fuzzy_unordered_near_all_query(
     fuzzy_terms = []
 
     for term in terms:
+        if min_fuzzy_term_length > 0 and len(term) < min_fuzzy_term_length:
+            exact_term = query.Term(fieldname, term)
+            fuzzy_terms.append(exact_term)
+            if log_query_details:
+                log_event(
+                    logger,
+                    "exact_term_used",
+                    keyword=keyword,
+                    term=term,
+                    term_length=len(term),
+                    min_fuzzy_term_length=min_fuzzy_term_length,
+                    reason="short_term",
+                )
+            continue
+
         expanded_terms = sorted(
             {
                 field.from_bytes(candidate) if isinstance(candidate, bytes) else candidate
@@ -377,16 +439,17 @@ def build_fuzzy_unordered_near_all_query(
                 )
             }
         )
-        log_event(
-            logger,
-            "fuzzy_term_expanded",
-            keyword=keyword,
-            term=term,
-            edit_distance=edit_distance,
-            prefixlength=prefixlength,
-            expanded_terms=expanded_terms,
-            expanded_term_count=len(expanded_terms),
-        )
+        if log_query_details:
+            log_event(
+                logger,
+                "fuzzy_term_expanded",
+                keyword=keyword,
+                term=term,
+                edit_distance=edit_distance,
+                prefixlength=prefixlength,
+                min_fuzzy_term_length=min_fuzzy_term_length,
+                expanded_term_count=len(expanded_terms),
+            )
 
         if not expanded_terms:
             log_event(
@@ -404,13 +467,14 @@ def build_fuzzy_unordered_near_all_query(
         )
 
     if len(fuzzy_terms) == 1:
-        log_event(
-            logger,
-            "whoosh_query_built",
-            keyword=keyword,
-            query_type=type(fuzzy_terms[0]).__name__,
-            query=str(fuzzy_terms[0]),
-        )
+        if log_query_details:
+            log_event(
+                logger,
+                "whoosh_query_built",
+                keyword=keyword,
+                query_type=type(fuzzy_terms[0]).__name__,
+                analyzed_term_count=len(terms),
+            )
         return fuzzy_terms[0]
 
     near_query = spans.SpanNear2(
@@ -418,15 +482,16 @@ def build_fuzzy_unordered_near_all_query(
         slop=slop,
         ordered=False,
     )
-    log_event(
-        logger,
-        "whoosh_query_built",
-        keyword=keyword,
-        query_type=type(near_query).__name__,
-        query=str(near_query),
-        slop=slop,
-        ordered=False,
-    )
+    if log_query_details:
+        log_event(
+            logger,
+            "whoosh_query_built",
+            keyword=keyword,
+            query_type=type(near_query).__name__,
+            analyzed_term_count=len(terms),
+            slop=slop,
+            ordered=False,
+        )
 
     return near_query
 
@@ -437,8 +502,10 @@ def run_keyword_detection(
     slop=5,
     edit_distance=1,
     prefixlength=0,
+    min_fuzzy_term_length=5,
     index_dir=None,
     keep_stopwords=False,
+    stem_words=False,
     include_cover=False,
     include_empty_pages=True,
     include_file_path=False,
@@ -454,8 +521,11 @@ def run_keyword_detection(
         slop=slop,
         edit_distance=edit_distance,
         prefixlength=prefixlength,
+        min_fuzzy_term_length=min_fuzzy_term_length,
         index_dir=index_dir,
         keep_stopwords=keep_stopwords,
+        stem_words=stem_words,
+        analyzer_mode=analyzer_mode(keep_stopwords=keep_stopwords, stem_words=stem_words),
         include_cover=include_cover,
         include_empty_pages=include_empty_pages,
         include_file_path=include_file_path,
@@ -483,12 +553,16 @@ def run_keyword_detection(
 
     step_started_at = perf_counter()
     page_records = extract_pages_from_ocr_json(ocr_json, include_cover=include_cover)
-    log_event(
-        logger,
-        "pages_extracted",
-        duration_ms=elapsed_ms(step_started_at),
-        page_count=len(page_records),
-        pages=[
+    pages_extracted_payload = {
+        "duration_ms": elapsed_ms(step_started_at),
+        "page_count": len(page_records),
+        "non_empty_page_count": sum(1 for page in page_records if page.get("content", "")),
+        "total_content_chars": sum(len(page.get("content", "") or "") for page in page_records),
+        "unique_encounter_count": len({str(page.get("encounter_id", "")) for page in page_records}),
+    }
+
+    if log_preview_chars > 0:
+        pages_extracted_payload["pages"] = [
             {
                 "encounter_id": str(page.get("encounter_id", "")),
                 "file_path": page.get("file_path", ""),
@@ -497,19 +571,22 @@ def run_keyword_detection(
                 "content_preview": preview_text(page.get("content", ""), log_preview_chars),
             }
             for page in page_records
-        ],
-    )
+        ]
+
+    log_event(logger, "pages_extracted", **pages_extracted_payload)
 
     step_started_at = perf_counter()
     keyword_records = flatten_keyword_json(keywords_json)
-    log_event(
-        logger,
-        "keywords_flattened",
-        duration_ms=elapsed_ms(step_started_at),
-        keyword_variant_count=len(keyword_records),
-        keyword_group_count=len({record["group"] for record in keyword_records}),
-        keyword_records=keyword_records,
-    )
+    keywords_flattened_payload = {
+        "duration_ms": elapsed_ms(step_started_at),
+        "keyword_variant_count": len(keyword_records),
+        "keyword_group_count": len({record["group"] for record in keyword_records}),
+    }
+
+    if log_preview_chars > 0:
+        keywords_flattened_payload["keyword_records"] = keyword_records
+
+    log_event(logger, "keywords_flattened", **keywords_flattened_payload)
 
     temp_dir = None
 
@@ -520,13 +597,19 @@ def run_keyword_detection(
 
     try:
         step_started_at = perf_counter()
-        ix = create_or_replace_index(index_dir, keep_stopwords=keep_stopwords)
+        ix = create_or_replace_index(
+            index_dir,
+            keep_stopwords=keep_stopwords,
+            stem_words=stem_words,
+        )
         log_event(
             logger,
             "whoosh_index_created",
             duration_ms=elapsed_ms(step_started_at),
             index_dir=index_dir,
             keep_stopwords=keep_stopwords,
+            stem_words=stem_words,
+            analyzer_mode=analyzer_mode(keep_stopwords=keep_stopwords, stem_words=stem_words),
         )
 
         step_started_at = perf_counter()
@@ -569,6 +652,8 @@ def run_keyword_detection(
                     slop=slop,
                     edit_distance=edit_distance,
                     prefixlength=prefixlength,
+                    min_fuzzy_term_length=min_fuzzy_term_length,
+                    log_query_details=log_preview_chars > 0,
                     logger=logger,
                 )
 
@@ -593,22 +678,24 @@ def run_keyword_detection(
                     if match_record not in output_by_doc_id[doc_id]["matches"]:
                         output_by_doc_id[doc_id]["matches"].append(match_record)
                         added_match_count += 1
-                        log_event(
-                            logger,
-                            "match_added",
-                            group=group,
-                            variant=variant,
-                            **hit_record,
-                        )
+                        if log_preview_chars > 0:
+                            log_event(
+                                logger,
+                                "match_added",
+                                group=group,
+                                variant=variant,
+                                **hit_record,
+                            )
                     else:
                         duplicate_match_count += 1
-                        log_event(
-                            logger,
-                            "duplicate_match_skipped",
-                            group=group,
-                            variant=variant,
-                            **hit_record,
-                        )
+                        if log_preview_chars > 0:
+                            log_event(
+                                logger,
+                                "duplicate_match_skipped",
+                                group=group,
+                                variant=variant,
+                                **hit_record,
+                            )
 
                 log_event(
                     logger,
@@ -678,7 +765,19 @@ def log_file_for_ocr_json(ocr_json_file, ocr_root, logs_root):
 
 
 def default_output_root():
-    return Path(__file__).resolve().parent / "Output"
+    return CONFIG_OUTPUT
+
+
+def output_path_for_single_file(ocr_json_file, ocr_root, output_path):
+    if not output_path:
+        return None
+
+    output_path = Path(output_path)
+
+    if output_path.suffix:
+        return output_path
+
+    return output_file_for_ocr_json(ocr_json_file, ocr_root, output_path)
 
 
 def resolve_logs_root(output_path, logs_dir):
@@ -733,8 +832,10 @@ def process_ocr_json_file(
             slop=args.slop,
             edit_distance=args.edit_distance,
             prefixlength=args.prefixlength,
+            min_fuzzy_term_length=args.min_fuzzy_term_length,
             index_dir=args.index_dir,
             keep_stopwords=args.keep_stopwords,
+            stem_words=args.stem_words,
             include_cover=args.include_cover,
             include_empty_pages=not args.matched_only,
             include_file_path=args.include_file_path,
@@ -799,51 +900,62 @@ def process_ocr_json_file(
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Detect keyword variants from encounter OCR JSON using Whoosh."
+        description="Detect keyword variants from encounter OCR JSON using Whoosh.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
 
     parser.add_argument(
         "--ocr-json",
-        required=True,
+        default=CONFIG_OCR_JSON,
         help="Path to one OCR JSON file, or a folder containing OCR JSON files.",
     )
 
     parser.add_argument(
         "--keywords-json",
-        required=True,
+        default=CONFIG_KEYWORDS_JSON,
         help="Path to flattened/nested keyword JSON file.",
     )
 
     parser.add_argument(
         "--slop",
         type=int,
-        default=5,
+        default=CONFIG_SLOP,
         help="Maximum proximity/slop distance between keyword terms. Default: 5.",
     )
 
     parser.add_argument(
         "--edit-distance",
         type=int,
-        default=1,
+        default=CONFIG_EDIT_DISTANCE,
         help="Fuzzy typo tolerance for each term. Default: 1.",
     )
 
     parser.add_argument(
         "--prefixlength",
         type=int,
-        default=0,
+        default=CONFIG_PREFIXLENGTH,
         help="Number of starting characters that must match exactly. Default: 0.",
     )
 
     parser.add_argument(
+        "--min-fuzzy-term-length",
+        type=int,
+        default=CONFIG_MIN_FUZZY_TERM_LENGTH,
+        help=(
+            "Minimum analyzed term length allowed to use fuzzy matching. "
+            "Shorter terms use exact matching to reduce false positives."
+        ),
+    )
+
+    parser.add_argument(
         "--index-dir",
-        default=None,
+        default=CONFIG_INDEX_DIR,
         help="Optional Whoosh index directory. If not passed, a temporary index is used.",
     )
 
     parser.add_argument(
         "--output",
-        default=None,
+        default=CONFIG_OUTPUT,
         help=(
             "For one OCR JSON file, optional output JSON file path. "
             "For an OCR folder, output root folder where the input hierarchy is mirrored. "
@@ -853,44 +965,62 @@ def parse_args():
 
     parser.add_argument(
         "--logs-dir",
-        default=None,
+        default=CONFIG_LOGS_DIR,
         help="Optional log root folder. Defaults to a Logs folder under the output folder.",
     )
 
     parser.add_argument(
         "--keep-stopwords",
-        action="store_true",
+        action=argparse.BooleanOptionalAction,
+        default=CONFIG_KEEP_STOPWORDS,
         help="Keep stop words like 'and' and 'by'. Default is recall-first mode where stop words are removed.",
     )
 
     parser.add_argument(
+        "--stem-words",
+        action=argparse.BooleanOptionalAction,
+        default=CONFIG_STEM_WORDS,
+        help=(
+            "Stem OCR and keyword terms before fuzzy matching. "
+            "If used with --keep-stopwords, stemming takes precedence."
+        ),
+    )
+
+    parser.add_argument(
         "--include-cover",
-        action="store_true",
+        action=argparse.BooleanOptionalAction,
+        default=CONFIG_INCLUDE_COVER,
         help="Also process cover.text if present in OCR JSON.",
     )
 
     parser.add_argument(
         "--matched-only",
-        action="store_true",
+        action=argparse.BooleanOptionalAction,
+        default=CONFIG_MATCHED_ONLY,
         help="Return only pages where at least one keyword variant matched.",
     )
 
     parser.add_argument(
         "--include-file-path",
-        action="store_true",
+        action=argparse.BooleanOptionalAction,
+        default=CONFIG_INCLUDE_FILE_PATH,
         help="Include source file_path in each output record.",
     )
 
     parser.add_argument(
         "--log-preview-chars",
         type=int,
-        default=300,
-        help="Maximum OCR content preview characters written to logs per page. Use 0 to disable previews.",
+        default=CONFIG_LOG_PREVIEW_CHARS,
+        help=(
+            "Maximum OCR content preview characters written to logs per page. "
+            "Use 0 for compact logs with summary, timing, errors, and keyword hits only."
+        ),
     )
 
     parser.add_argument(
         "--stop-on-error",
-        action="store_true",
+        action=argparse.BooleanOptionalAction,
+        default=CONFIG_STOP_ON_ERROR,
         help="In folder mode, stop after the first failed OCR JSON file.",
     )
 
@@ -943,6 +1073,14 @@ def main():
                 ("keywords_json_file", str(args.keywords_json)),
                 ("output_root", str(output_root)),
                 ("logs_root", str(logs_root)),
+                ("index_dir", str(args.index_dir) if args.index_dir else None),
+                ("slop", args.slop),
+                ("edit_distance", args.edit_distance),
+                ("prefixlength", args.prefixlength),
+                ("min_fuzzy_term_length", args.min_fuzzy_term_length),
+                ("keep_stopwords", args.keep_stopwords),
+                ("stem_words", args.stem_words),
+                ("analyzer_mode", analyzer_mode(args.keep_stopwords, args.stem_words)),
                 ("duration_ms", elapsed_ms(batch_started_at)),
                 ("file_count", len(summaries)),
                 ("success_count", sum(1 for item in summaries if item["status"] == "success")),
@@ -966,10 +1104,7 @@ def main():
 
         return
 
-    if args.output and Path(args.output).exists() and Path(args.output).is_dir():
-        output_path = output_file_for_ocr_json(ocr_json_files[0], ocr_root, Path(args.output))
-    else:
-        output_path = Path(args.output) if args.output else None
+    output_path = output_path_for_single_file(ocr_json_files[0], ocr_root, args.output)
 
     log_path = log_file_for_ocr_json(ocr_json_files[0], ocr_root, logs_root)
     summary = process_ocr_json_file(

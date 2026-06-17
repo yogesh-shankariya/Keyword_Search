@@ -61,6 +61,27 @@ By default, `runtime.generate_report_after_tuning` is `true`, so the orchestrato
 
 The report writer automatically uses `xlsxwriter` first, then `openpyxl`, when either package is installed. Those engines create a formatted workbook with frozen headers, filters, bold header rows, and sized columns.
 
+If a run produces output for only part of the OCR set, comparison metrics are calculated only on files that have method output and matching GT. The report still exposes file counts such as `common_file_count` and `missing_method_file_count` so incomplete runs are visible.
+
+For the `Best WHOOSH vs RapidFuzz`, `Ground Truth (LLM)`, and `Detailed Comparison` sheets, the workbook uses the best WHOOSH run's passed file set. For example, if GT has 200 files and the best WHOOSH run produced 190 valid output files, those sheets are scoped to those 190 files.
+
+## Retry Behavior
+
+`runtime.max_file_retries: 3` means a failed OCR JSON file is rerun up to three additional times before it is marked failed. This retry is per file, not for the whole parameter combination.
+
+Each retry gets its own log file, such as:
+
+```text
+abc.log
+abc_attempt_2.log
+abc_attempt_3.log
+abc_attempt_4.log
+```
+
+The first attempt uses the normal log filename; retry attempts use numbered log filenames.
+
+If the file still fails after all retries, copies of those attempt logs plus a JSON failure summary are written under `logs/<run_folder>/failed/`. The failure summary includes the input path, output path, attempt count, final error type/message, and all failed attempts. Stale output files for failed files are removed before retrying, so failed files do not leak into the report.
+
 RapidFuzz output should be a JSON page list with this shape:
 
 ```json

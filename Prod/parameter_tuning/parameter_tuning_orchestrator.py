@@ -11,11 +11,16 @@ from time import perf_counter
 from typing import Any, Literal
 
 from config_loader import AppConfig, load_config
-from whoosh_encounter_json_keyword_search import DetectionSettings, process_ocr_path
+from whoosh_encounter_json_keyword_search import (
+    DetectionSettings,
+    collect_ocr_json_files,
+    output_file_for_ocr_json,
+    process_ocr_path,
+)
 
 
 LOGGER = logging.getLogger(__name__)
-RunStatus = Literal["success", "failed", "error", "skipped"]
+RunStatus = Literal["success", "partial_success", "failed", "error", "skipped"]
 
 
 @dataclass(frozen=True)
@@ -110,6 +115,7 @@ def create_run_configs(config: AppConfig, combinations: list[ParameterCombinatio
             include_file_path=config.runtime.include_file_path,
             log_preview_chars=config.runtime.log_preview_chars,
             stop_on_error=config.runtime.stop_on_error,
+            max_file_retries=config.runtime.max_file_retries,
         )
         run_configs.append(
             RunConfig(
@@ -162,15 +168,18 @@ def parameters_to_dict(run_config: RunConfig) -> dict[str, Any]:
 def completed_result(run_config: RunConfig) -> RunResult | None:
     if not run_config.output_dir.exists():
         return None
-    output_files = list(run_config.output_dir.glob(run_config.output_glob))
-    if not output_files:
+    expected_outputs = [
+        output_file_for_ocr_json(ocr_json_file, run_config.ocr_json, run_config.output_dir)
+        for ocr_json_file in collect_ocr_json_files(run_config.ocr_json)
+    ]
+    if not expected_outputs or any(not output_path.exists() for output_path in expected_outputs):
         return None
     return RunResult(
         run_id=run_config.run_id,
         run_name=run_config.run_name,
         status="success",
         duration_seconds=0.0,
-        files_processed=len(output_files),
+        files_processed=len(expected_outputs),
         output_dir=str(run_config.output_dir),
         logs_dir=str(run_config.logs_dir),
         index_dir=str(run_config.index_dir),
@@ -192,18 +201,23 @@ def execute_run(run_config: RunConfig) -> RunResult:
         duration = perf_counter() - start_time
         output_files = list(run_config.output_dir.glob(run_config.output_glob))
         failed_count = int(batch_summary.get("failed_count", 0) or 0)
+        success_count = int(batch_summary.get("success_count", 0) or 0)
         if failed_count:
+            status: RunStatus = "partial_success" if success_count > 0 else "failed"
             return RunResult(
                 run_id=run_config.run_id,
                 run_name=run_config.run_name,
-                status="failed",
+                status=status,
                 duration_seconds=duration,
                 files_processed=len(output_files),
                 output_dir=str(run_config.output_dir),
                 logs_dir=str(run_config.logs_dir),
                 index_dir=str(run_config.index_dir),
                 parameters=parameters_to_dict(run_config),
-                error=f"{failed_count} OCR file(s) failed. See logs_dir.",
+                error=(
+                    f"{failed_count} OCR file(s) failed after retries; "
+                    f"{success_count} OCR file(s) passed. See logs_dir/failed."
+                ),
             )
 
         return RunResult(
@@ -239,7 +253,9 @@ def save_execution_summary(
     total_wall_seconds: float,
 ) -> None:
     sorted_results = sorted(results, key=lambda item: item.run_id)
-    successful_runs = sum(1 for result in sorted_results if result.status in {"success", "skipped"})
+    successful_runs = sum(
+        1 for result in sorted_results if result.status in {"success", "partial_success", "skipped"}
+    )
     failed_runs = sum(1 for result in sorted_results if result.status in {"failed", "error"})
     summary = {
         "timestamp": datetime.now().isoformat(timespec="seconds"),
@@ -303,17 +319,24 @@ def print_progress(
     result: RunResult,
     elapsed_seconds: float,
     success_count: int,
+    partial_count: int,
     failed_count: int,
 ) -> None:
     progress_pct = (completed_count / total_runs) * 100 if total_runs else 100.0
     avg_time_per_run = elapsed_seconds / completed_count if completed_count else 0.0
     remaining_runs = total_runs - completed_count
     eta_seconds = remaining_runs * avg_time_per_run
-    status_text = "OK" if result.status in {"success", "skipped"} else "FAIL"
+    status_text = (
+        "OK"
+        if result.status in {"success", "skipped"}
+        else "PARTIAL"
+        if result.status == "partial_success"
+        else "FAIL"
+    )
     print(
         f"{progress_bar(completed_count, total_runs)} {progress_pct:6.2f}% | "
         f"Completed {completed_count}/{total_runs} | "
-        f"Success {success_count} | Failed {failed_count} | "
+        f"Success {success_count} | Partial {partial_count} | Failed {failed_count} | "
         f"Last run {result.run_id:03d} {status_text} "
         f"({result.files_processed} file(s), {format_duration(result.duration_seconds)}) | "
         f"Elapsed {format_duration(elapsed_seconds)} | ETA {format_duration(eta_seconds)}",
@@ -354,6 +377,7 @@ def run_parameter_tuning(config: AppConfig) -> list[RunResult]:
                 result = future.result()
                 results.append(result)
                 success_count = sum(1 for item in results if item.status in {"success", "skipped"})
+                partial_count = sum(1 for item in results if item.status == "partial_success")
                 failed_count = sum(1 for item in results if item.status in {"failed", "error"})
                 print_progress(
                     completed_count=len(results),
@@ -361,6 +385,7 @@ def run_parameter_tuning(config: AppConfig) -> list[RunResult]:
                     result=result,
                     elapsed_seconds=perf_counter() - start_time,
                     success_count=success_count,
+                    partial_count=partial_count,
                     failed_count=failed_count,
                 )
 
@@ -370,6 +395,7 @@ def run_parameter_tuning(config: AppConfig) -> list[RunResult]:
     print("=" * 80)
     print("PARAMETER TUNING COMPLETE")
     print(f"Successful/skipped runs: {sum(1 for item in results if item.status in {'success', 'skipped'})}/{len(results)}")
+    print(f"Partial-success runs: {sum(1 for item in results if item.status == 'partial_success')}/{len(results)}")
     print(f"Failed runs: {sum(1 for item in results if item.status in {'failed', 'error'})}/{len(results)}")
     print(f"Execution summary: {config.paths.execution_summary}")
     print("=" * 80)
@@ -382,14 +408,21 @@ def main() -> int:
     config = load_config()
     results = run_parameter_tuning(config)
 
-    failed = sum(1 for result in results if result.status in {"failed", "error"})
-    if failed:
+    hard_failed = sum(1 for result in results if result.status in {"failed", "error"})
+    partial = sum(1 for result in results if result.status == "partial_success")
+    if hard_failed:
         LOGGER.error(
             "Skipping report generation because %s tuning run(s) failed. "
             "Fix failures before creating a business-facing report.",
-            failed,
+            hard_failed,
         )
         return 1
+    if partial:
+        LOGGER.warning(
+            "Generating report with %s partial-success run(s). "
+            "Metrics are based only on files with method output; failed-file details are under logs/failed.",
+            partial,
+        )
 
     if config.runtime.generate_report_after_tuning:
         from generate_final_comparison_report import generate_report_from_config

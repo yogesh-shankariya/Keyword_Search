@@ -44,6 +44,7 @@ class DetectionSettings:
     include_file_path: bool = True
     log_preview_chars: int = 0
     stop_on_error: bool = False
+    max_file_retries: int = 3
 
 
 def utc_timestamp() -> str:
@@ -636,6 +637,45 @@ def log_file_for_ocr_json(ocr_json_file: Path, ocr_root: Path, logs_root: Path) 
     return Path(logs_root) / relative_path.parent / f"{relative_path.stem}.log"
 
 
+def retry_log_file_for_ocr_json(
+    ocr_json_file: Path,
+    ocr_root: Path,
+    logs_root: Path,
+    attempt_number: int,
+) -> Path:
+    relative_path = relative_path_for_output(ocr_json_file, ocr_root)
+    return Path(logs_root) / relative_path.parent / f"{relative_path.stem}_attempt_{attempt_number}.log"
+
+
+def cleanup_previous_file_artifacts(
+    ocr_json_file: Path,
+    ocr_root: Path,
+    output_path: Path,
+    logs_root: Path,
+) -> None:
+    relative_path = relative_path_for_output(ocr_json_file, ocr_root)
+    stem = relative_path.stem
+
+    output_path = Path(output_path)
+    if output_path.exists():
+        output_path.unlink()
+
+    log_dir = Path(logs_root) / relative_path.parent
+    failed_dir = Path(logs_root) / "failed" / relative_path.parent
+    for directory in (log_dir, failed_dir):
+        if not directory.exists():
+            continue
+        for candidate in directory.iterdir():
+            if not candidate.is_file():
+                continue
+            if candidate.name == f"{stem}.log":
+                candidate.unlink()
+            elif candidate.name.startswith(f"{stem}_attempt_") and candidate.suffix == ".log":
+                candidate.unlink()
+            elif candidate.name == f"{stem}_failure_summary.json":
+                candidate.unlink()
+
+
 def write_batch_timing_csv(csv_path: Path, summaries: list[dict[str, Any]]) -> None:
     csv_path = Path(csv_path)
     csv_path.parent.mkdir(parents=True, exist_ok=True)
@@ -643,7 +683,8 @@ def write_batch_timing_csv(csv_path: Path, summaries: list[dict[str, Any]]) -> N
         writer = csv.writer(file)
         writer.writerow(["filename", "processing_time_seconds"])
         for summary in summaries:
-            seconds = round(float(summary["duration_ms"]) / 1000, 3)
+            duration_ms = summary.get("total_duration_ms", summary["duration_ms"])
+            seconds = round(float(duration_ms) / 1000, 3)
             writer.writerow([summary["file_id"], f"{seconds:.3f}"])
 
 
@@ -654,6 +695,8 @@ def process_ocr_json_file(
     output_path: Path,
     log_path: Path,
     index_dir: Path,
+    attempt_number: int = 1,
+    max_attempts: int = 1,
 ) -> dict[str, Any]:
     file_started_at = perf_counter()
     ocr_json_file = Path(ocr_json_file)
@@ -666,6 +709,8 @@ def process_ocr_json_file(
             "file_processing_started",
             output_path=str(output_path),
             keywords_json_file=str(keywords_json_file),
+            attempt_number=attempt_number,
+            max_attempts=max_attempts,
         )
         output = run_keyword_detection(
             ocr_json_file=ocr_json_file,
@@ -687,6 +732,8 @@ def process_ocr_json_file(
             "output_path": str(output_path),
             "log_path": str(log_path),
             "status": "success",
+            "attempt_number": attempt_number,
+            "max_attempts": max_attempts,
             "duration_ms": elapsed_ms(file_started_at),
             "output_record_count": len(output),
             "matched_record_count": sum(1 for record in output if record["matches"]),
@@ -702,6 +749,8 @@ def process_ocr_json_file(
             "output_path": str(output_path),
             "log_path": str(log_path),
             "status": "failed",
+            "attempt_number": attempt_number,
+            "max_attempts": max_attempts,
             "duration_ms": elapsed_ms(file_started_at),
             "error_type": type(exc).__name__,
             "error_message": str(exc),
@@ -711,6 +760,110 @@ def process_ocr_json_file(
 
     finally:
         logger.close()
+
+
+def process_ocr_json_file_with_retries(
+    ocr_json_file: Path,
+    ocr_root: Path,
+    keywords_json_file: Path,
+    settings: DetectionSettings,
+    output_path: Path,
+    logs_root: Path,
+    index_dir: Path,
+) -> dict[str, Any]:
+    wrapper_started_at = perf_counter()
+    max_retries = max(settings.max_file_retries, 0)
+    max_attempts = max_retries + 1
+    failed_attempts: list[dict[str, Any]] = []
+    cleanup_previous_file_artifacts(
+        ocr_json_file=ocr_json_file,
+        ocr_root=ocr_root,
+        output_path=output_path,
+        logs_root=logs_root,
+    )
+
+    for attempt_number in range(1, max_attempts + 1):
+        log_path = (
+            log_file_for_ocr_json(ocr_json_file, ocr_root, logs_root)
+            if attempt_number == 1
+            else retry_log_file_for_ocr_json(ocr_json_file, ocr_root, logs_root, attempt_number)
+        )
+        summary = process_ocr_json_file(
+            ocr_json_file=ocr_json_file,
+            keywords_json_file=keywords_json_file,
+            settings=settings,
+            output_path=output_path,
+            log_path=log_path,
+            index_dir=index_dir,
+            attempt_number=attempt_number,
+            max_attempts=max_attempts,
+        )
+        summary["retry_count"] = attempt_number - 1
+
+        if summary["status"] == "success":
+            summary["failed_attempts"] = failed_attempts
+            summary["total_duration_ms"] = elapsed_ms(wrapper_started_at)
+            return summary
+
+        failed_attempts.append(
+            {
+                "attempt_number": attempt_number,
+                "log_path": summary.get("log_path"),
+                "error_type": summary.get("error_type"),
+                "error_message": summary.get("error_message"),
+                "duration_ms": summary.get("duration_ms"),
+            }
+        )
+
+    summary["failed_attempts"] = failed_attempts
+    summary["total_duration_ms"] = elapsed_ms(wrapper_started_at)
+    write_failed_file_artifacts(
+        summary=summary,
+        ocr_json_file=ocr_json_file,
+        ocr_root=ocr_root,
+        logs_root=logs_root,
+    )
+    return summary
+
+
+def write_failed_file_artifacts(
+    summary: dict[str, Any],
+    ocr_json_file: Path,
+    ocr_root: Path,
+    logs_root: Path,
+) -> None:
+    relative_path = relative_path_for_output(ocr_json_file, ocr_root)
+    failed_dir = Path(logs_root) / "failed" / relative_path.parent
+    failed_dir.mkdir(parents=True, exist_ok=True)
+
+    copied_logs: list[str] = []
+    for attempt in summary.get("failed_attempts", []):
+        log_path = Path(str(attempt.get("log_path", "")))
+        if log_path.exists():
+            copied_log_path = failed_dir / log_path.name
+            shutil.copy2(log_path, copied_log_path)
+            copied_logs.append(str(copied_log_path))
+
+    failure_summary = {
+        "file_id": summary.get("file_id"),
+        "input_path": summary.get("input_path"),
+        "output_path": summary.get("output_path"),
+        "status": summary.get("status"),
+        "attempt_count": summary.get("attempt_number"),
+        "max_attempts": summary.get("max_attempts"),
+        "retry_count": summary.get("retry_count"),
+        "error_type": summary.get("error_type"),
+        "error_message": summary.get("error_message"),
+        "failed_attempts": summary.get("failed_attempts", []),
+        "copied_log_paths": copied_logs,
+    }
+    failure_summary_path = failed_dir / f"{relative_path.stem}_failure_summary.json"
+    failure_summary_path.write_text(
+        json.dumps(failure_summary, indent=2, ensure_ascii=False),
+        encoding="utf-8",
+    )
+    summary["failed_logs_dir"] = str(failed_dir)
+    summary["failed_summary_path"] = str(failure_summary_path)
 
 
 def process_ocr_path(
@@ -734,13 +887,13 @@ def process_ocr_path(
     summaries: list[dict[str, Any]] = []
     for ocr_json_file in ocr_json_files:
         output_path = output_file_for_ocr_json(ocr_json_file, ocr_root, output_root)
-        log_path = log_file_for_ocr_json(ocr_json_file, ocr_root, logs_root)
-        summary = process_ocr_json_file(
+        summary = process_ocr_json_file_with_retries(
             ocr_json_file=ocr_json_file,
+            ocr_root=ocr_root,
             keywords_json_file=keywords_json_file,
             settings=settings,
             output_path=output_path,
-            log_path=log_path,
+            logs_root=logs_root,
             index_dir=index_dir,
         )
         summaries.append(summary)
@@ -762,6 +915,7 @@ def process_ocr_path(
             ("keep_stopwords", settings.keep_stopwords),
             ("stem_words", settings.stem_words),
             ("analyzer_mode", analyzer_mode(settings.keep_stopwords, settings.stem_words)),
+            ("max_file_retries", settings.max_file_retries),
             ("duration_ms", elapsed_ms(batch_started_at)),
             ("file_count", len(summaries)),
             ("success_count", sum(1 for item in summaries if item["status"] == "success")),
@@ -793,6 +947,7 @@ if __name__ == "__main__":
         include_file_path=app_config.runtime.include_file_path,
         log_preview_chars=app_config.runtime.log_preview_chars,
         stop_on_error=app_config.runtime.stop_on_error,
+        max_file_retries=app_config.runtime.max_file_retries,
     )
     process_ocr_path(
         ocr_root=app_config.paths.ocr_json,

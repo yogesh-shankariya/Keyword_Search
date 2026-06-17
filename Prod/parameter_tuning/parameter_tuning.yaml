@@ -25,6 +25,7 @@ runtime:
   include_file_path: true
   log_preview_chars: 0
   stop_on_error: false
+  max_file_retries: 3
   output_glob: "*_keyword_output.json"
   generate_report_after_tuning: true
 

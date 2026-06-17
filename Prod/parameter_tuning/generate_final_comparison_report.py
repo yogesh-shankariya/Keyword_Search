@@ -153,6 +153,25 @@ def build_file_mapping(directory: Path, glob_pattern: str) -> dict[str, Path]:
     return mapping
 
 
+def filter_file_mapping(
+    mapping: dict[str, Path],
+    allowed_bases: set[str] | None,
+) -> dict[str, Path]:
+    if allowed_bases is None:
+        return mapping
+    return {base_name: path for base_name, path in mapping.items() if base_name in allowed_bases}
+
+
+def compared_file_bases(
+    method_output_dir: Path,
+    gt_output_dir: Path,
+    method_glob: str,
+) -> set[str]:
+    gt_files = build_file_mapping(gt_output_dir, "*.json")
+    method_files = build_file_mapping(method_output_dir, method_glob)
+    return set(gt_files) & set(method_files)
+
+
 def extract_keyword_from_gt_item(item: Any) -> tuple[str, str]:
     if isinstance(item, Mapping):
         return str(item.get("keyword", "")).strip(), str(item.get("reason", "")).strip()
@@ -281,9 +300,10 @@ def compare_output_dir_vs_gt(
     gt_output_dir: Path,
     method_glob: str,
     preferred_match_field: str,
+    allowed_bases: set[str] | None = None,
 ) -> MethodMetrics:
-    gt_files = build_file_mapping(gt_output_dir, "*.json")
-    method_files = build_file_mapping(method_output_dir, method_glob)
+    gt_files = filter_file_mapping(build_file_mapping(gt_output_dir, "*.json"), allowed_bases)
+    method_files = filter_file_mapping(build_file_mapping(method_output_dir, method_glob), allowed_bases)
     common_bases = set(gt_files) & set(method_files)
     missing_method_bases = set(gt_files) - set(method_files)
     extra_method_bases = set(method_files) - set(gt_files)
@@ -406,7 +426,7 @@ def load_successful_runs(execution_summary_path: Path) -> list[dict[str, Any]]:
     for raw in raw_results:
         if not isinstance(raw, Mapping):
             continue
-        if raw.get("status") not in {"success", "skipped"}:
+        if raw.get("status") not in {"success", "partial_success", "skipped"}:
             continue
         if not raw.get("output_dir"):
             continue
@@ -520,16 +540,20 @@ def best_vs_rp_summary_dataframe(
     )
 
 
-def extract_ground_truth_data(gt_output_dir: Path) -> list[dict[str, Any]]:
+def extract_ground_truth_data(
+    gt_output_dir: Path,
+    allowed_bases: set[str] | None = None,
+) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
-    for filepath in sorted(gt_output_dir.glob("*.json")):
+    gt_files = filter_file_mapping(build_file_mapping(gt_output_dir, "*.json"), allowed_bases)
+    for base_name, filepath in sorted(gt_files.items()):
         page_keywords, total_pages = load_gt_keywords(filepath)
         for page_num, keywords in sorted(page_keywords.items()):
             for kw_info in keywords:
                 rows.append(
                     {
                         "file_name": filepath.name,
-                        "base_name": get_base_filename(filepath.name),
+                        "base_name": base_name,
                         "page_number": page_num,
                         "total_pages": total_pages,
                         "keyword": kw_info.get("keyword", ""),
@@ -559,10 +583,11 @@ def extract_detailed_comparison_data(
     whoosh_glob: str,
     rp_glob: str,
     preferred_match_field: str,
+    allowed_bases: set[str] | None = None,
 ) -> list[dict[str, Any]]:
-    gt_files = build_file_mapping(gt_output_dir, "*.json")
-    whoosh_files = build_file_mapping(best_whoosh_output_dir, whoosh_glob)
-    rp_files = build_file_mapping(rp_output_dir, rp_glob)
+    gt_files = filter_file_mapping(build_file_mapping(gt_output_dir, "*.json"), allowed_bases)
+    whoosh_files = filter_file_mapping(build_file_mapping(best_whoosh_output_dir, whoosh_glob), allowed_bases)
+    rp_files = filter_file_mapping(build_file_mapping(rp_output_dir, rp_glob), allowed_bases)
     common_bases = set(gt_files) & set(whoosh_files) & set(rp_files)
     rows: list[dict[str, Any]] = []
 
@@ -915,30 +940,39 @@ def generate_report_from_config(config: AppConfig) -> Path:
 
     best_run_id = int(df.iloc[0]["run_id"])
     best_run = next(run for run in successful_runs if int(run["run_id"]) == best_run_id)
+    best_whoosh_output_dir = Path(str(best_run["output_dir"]))
+    best_whoosh_passed_bases = compared_file_bases(
+        method_output_dir=best_whoosh_output_dir,
+        gt_output_dir=config.paths.gt_output,
+        method_glob=config.report.whoosh_glob,
+    )
     best_vs_rp_df: pd.DataFrame | None = None
     detailed_data: list[dict[str, Any]] = []
 
     if config.paths.rp_output is not None and config.paths.rp_output.exists():
         whoosh_metrics = compare_output_dir_vs_gt(
-            method_output_dir=Path(str(best_run["output_dir"])),
+            method_output_dir=best_whoosh_output_dir,
             gt_output_dir=config.paths.gt_output,
             method_glob=config.report.whoosh_glob,
             preferred_match_field=config.report.method_key_field,
+            allowed_bases=best_whoosh_passed_bases,
         ).to_dict()
         rp_metrics = compare_output_dir_vs_gt(
             method_output_dir=config.paths.rp_output,
             gt_output_dir=config.paths.gt_output,
             method_glob=config.report.rp_glob,
             preferred_match_field=config.report.method_key_field,
+            allowed_bases=best_whoosh_passed_bases,
         ).to_dict()
         best_vs_rp_df = best_vs_rp_summary_dataframe(whoosh_metrics, rp_metrics)
         detailed_data = extract_detailed_comparison_data(
-            best_whoosh_output_dir=Path(str(best_run["output_dir"])),
+            best_whoosh_output_dir=best_whoosh_output_dir,
             rp_output_dir=config.paths.rp_output,
             gt_output_dir=config.paths.gt_output,
             whoosh_glob=config.report.whoosh_glob,
             rp_glob=config.report.rp_glob,
             preferred_match_field=config.report.method_key_field,
+            allowed_bases=best_whoosh_passed_bases,
         )
     elif config.paths.rp_output is not None:
         LOGGER.warning("RapidFuzz output directory does not exist: %s", config.paths.rp_output)
@@ -948,7 +982,7 @@ def generate_report_from_config(config: AppConfig) -> Path:
         output_excel_path=output_excel_path,
         parameter_results_df=df,
         best_vs_rp_df=best_vs_rp_df,
-        gt_data=extract_ground_truth_data(config.paths.gt_output),
+        gt_data=extract_ground_truth_data(config.paths.gt_output, allowed_bases=best_whoosh_passed_bases),
         detailed_data=detailed_data,
     )
     LOGGER.info("Report saved to: %s", output_excel_path)

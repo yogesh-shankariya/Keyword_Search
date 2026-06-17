@@ -42,6 +42,7 @@ class RuntimeConfig:
     include_file_path: bool
     log_preview_chars: int
     stop_on_error: bool
+    max_file_retries: int
     output_glob: str
     generate_report_after_tuning: bool
 
@@ -185,6 +186,7 @@ def load_config(config_path: Path = CONFIG_PATH) -> AppConfig:
             include_file_path=_bool(runtime_raw, "include_file_path", True),
             log_preview_chars=_int(runtime_raw, "log_preview_chars", 0),
             stop_on_error=_bool(runtime_raw, "stop_on_error", False),
+            max_file_retries=_int(runtime_raw, "max_file_retries", 3),
             output_glob=_str(runtime_raw, "output_glob", "*_keyword_output.json"),
             generate_report_after_tuning=_bool(runtime_raw, "generate_report_after_tuning", True),
         ),

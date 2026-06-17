@@ -65,6 +65,8 @@ If a run produces output for only part of the OCR set, comparison metrics are ca
 
 For the `Best WHOOSH vs RapidFuzz`, `Ground Truth (LLM)`, and `Detailed Comparison` sheets, the workbook uses the best WHOOSH run's passed file set. For example, if GT has 200 files and the best WHOOSH run produced 190 valid output files, those sheets are scoped to those 190 files.
 
+The `Best WHOOSH vs RapidFuzz` sheet is split into two stacked tables: `Keyword Level Summary` first, then `Page Level Summary`, so the sheet stays readable instead of spreading all metrics across one very wide row.
+
 ## Retry Behavior
 
 `runtime.max_file_retries: 3` means a failed OCR JSON file is rerun up to three additional times before it is marked failed. This retry is per file, not for the whole parameter combination.

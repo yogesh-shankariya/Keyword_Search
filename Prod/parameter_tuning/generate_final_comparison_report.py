@@ -17,6 +17,8 @@ from config_loader import AppConfig, load_config
 
 
 LOGGER = logging.getLogger(__name__)
+SheetRows = list[list[Any]]
+ReportSheetData = pd.DataFrame | SheetRows
 
 
 @dataclass(frozen=True)
@@ -458,86 +460,141 @@ def run_to_row(run: dict[str, Any], metrics: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def best_vs_rp_summary_dataframe(
+def best_vs_rp_summary_rows(
     whoosh_metrics: dict[str, Any],
     rp_metrics: dict[str, Any],
-) -> pd.DataFrame:
-    return pd.DataFrame(
+) -> SheetRows:
+    keyword_header = [
+        "Method",
+        "File Count",
+        "Files Compared",
+        "GT Total Keywords",
+        "Keywords Detected",
+        "Keyword TP",
+        "Keyword FP",
+        "Keyword FN",
+        "Keyword Precision (%)",
+        "Keyword Recall (%)",
+        "Keyword F1",
+    ]
+    keyword_rows = [
         [
-            {
-                "Method": "Ground Truth",
-                "File Count": whoosh_metrics["gt_file_count"],
-                "Files Compared": whoosh_metrics["common_file_count"],
-                "GT Total Keywords": whoosh_metrics["gt_total_keywords"],
-                "Keywords Detected": whoosh_metrics["gt_total_keywords"],
-                "Keyword TP": "",
-                "Keyword FP": "",
-                "Keyword FN": "",
-                "Keyword Precision (%)": "",
-                "Keyword Recall (%)": "",
-                "Keyword F1": "",
-                "Total Pages": whoosh_metrics["total_pages_all_docs"],
-                "GT Pages With Keywords": whoosh_metrics["gt_pages_with_keywords_total"],
-                "Pages Detected": whoosh_metrics["gt_pages_with_keywords_total"],
-                "Page TP": "",
-                "Page FP": "",
-                "Page FN": "",
-                "Page TN": "",
-                "Page Precision (%)": "",
-                "Page Recall (%)": "",
-                "Page F1": "",
-                "Page Accuracy (%)": "",
-            },
-            {
-                "Method": "WHOOSH Best",
-                "File Count": whoosh_metrics["method_file_count"],
-                "Files Compared": whoosh_metrics["common_file_count"],
-                "GT Total Keywords": whoosh_metrics["gt_total_keywords"],
-                "Keywords Detected": whoosh_metrics["method_total_detected"],
-                "Keyword TP": whoosh_metrics["kw_tp"],
-                "Keyword FP": whoosh_metrics["kw_fp"],
-                "Keyword FN": whoosh_metrics["kw_fn"],
-                "Keyword Precision (%)": whoosh_metrics["kw_precision"],
-                "Keyword Recall (%)": whoosh_metrics["kw_recall"],
-                "Keyword F1": whoosh_metrics["kw_f1"],
-                "Total Pages": whoosh_metrics["total_pages_all_docs"],
-                "GT Pages With Keywords": whoosh_metrics["gt_pages_with_keywords_total"],
-                "Pages Detected": whoosh_metrics["method_pages_detected"],
-                "Page TP": whoosh_metrics["page_tp"],
-                "Page FP": whoosh_metrics["page_fp"],
-                "Page FN": whoosh_metrics["page_fn"],
-                "Page TN": whoosh_metrics["page_tn"],
-                "Page Precision (%)": whoosh_metrics["page_precision"],
-                "Page Recall (%)": whoosh_metrics["page_recall"],
-                "Page F1": whoosh_metrics["page_f1"],
-                "Page Accuracy (%)": whoosh_metrics["page_accuracy"],
-            },
-            {
-                "Method": "RapidFuzz",
-                "File Count": rp_metrics["method_file_count"],
-                "Files Compared": rp_metrics["common_file_count"],
-                "GT Total Keywords": rp_metrics["gt_total_keywords"],
-                "Keywords Detected": rp_metrics["method_total_detected"],
-                "Keyword TP": rp_metrics["kw_tp"],
-                "Keyword FP": rp_metrics["kw_fp"],
-                "Keyword FN": rp_metrics["kw_fn"],
-                "Keyword Precision (%)": rp_metrics["kw_precision"],
-                "Keyword Recall (%)": rp_metrics["kw_recall"],
-                "Keyword F1": rp_metrics["kw_f1"],
-                "Total Pages": rp_metrics["total_pages_all_docs"],
-                "GT Pages With Keywords": rp_metrics["gt_pages_with_keywords_total"],
-                "Pages Detected": rp_metrics["method_pages_detected"],
-                "Page TP": rp_metrics["page_tp"],
-                "Page FP": rp_metrics["page_fp"],
-                "Page FN": rp_metrics["page_fn"],
-                "Page TN": rp_metrics["page_tn"],
-                "Page Precision (%)": rp_metrics["page_precision"],
-                "Page Recall (%)": rp_metrics["page_recall"],
-                "Page F1": rp_metrics["page_f1"],
-                "Page Accuracy (%)": rp_metrics["page_accuracy"],
-            },
-        ]
-    )
+            "Ground Truth",
+            whoosh_metrics["gt_file_count"],
+            whoosh_metrics["common_file_count"],
+            whoosh_metrics["gt_total_keywords"],
+            whoosh_metrics["gt_total_keywords"],
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+        ],
+        [
+            "WHOOSH Best",
+            whoosh_metrics["method_file_count"],
+            whoosh_metrics["common_file_count"],
+            whoosh_metrics["gt_total_keywords"],
+            whoosh_metrics["method_total_detected"],
+            whoosh_metrics["kw_tp"],
+            whoosh_metrics["kw_fp"],
+            whoosh_metrics["kw_fn"],
+            whoosh_metrics["kw_precision"],
+            whoosh_metrics["kw_recall"],
+            whoosh_metrics["kw_f1"],
+        ],
+        [
+            "RapidFuzz",
+            rp_metrics["method_file_count"],
+            rp_metrics["common_file_count"],
+            rp_metrics["gt_total_keywords"],
+            rp_metrics["method_total_detected"],
+            rp_metrics["kw_tp"],
+            rp_metrics["kw_fp"],
+            rp_metrics["kw_fn"],
+            rp_metrics["kw_precision"],
+            rp_metrics["kw_recall"],
+            rp_metrics["kw_f1"],
+        ],
+    ]
+
+    page_header = [
+        "Method",
+        "File Count",
+        "Files Compared",
+        "Total Pages",
+        "GT Pages With Keywords",
+        "Pages Detected",
+        "Page TP",
+        "Page FP",
+        "Page FN",
+        "Page TN",
+        "Page Precision (%)",
+        "Page Recall (%)",
+        "Page F1",
+        "Page Accuracy (%)",
+    ]
+    page_rows = [
+        [
+            "Ground Truth",
+            whoosh_metrics["gt_file_count"],
+            whoosh_metrics["common_file_count"],
+            whoosh_metrics["total_pages_all_docs"],
+            whoosh_metrics["gt_pages_with_keywords_total"],
+            whoosh_metrics["gt_pages_with_keywords_total"],
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+        ],
+        [
+            "WHOOSH Best",
+            whoosh_metrics["method_file_count"],
+            whoosh_metrics["common_file_count"],
+            whoosh_metrics["total_pages_all_docs"],
+            whoosh_metrics["gt_pages_with_keywords_total"],
+            whoosh_metrics["method_pages_detected"],
+            whoosh_metrics["page_tp"],
+            whoosh_metrics["page_fp"],
+            whoosh_metrics["page_fn"],
+            whoosh_metrics["page_tn"],
+            whoosh_metrics["page_precision"],
+            whoosh_metrics["page_recall"],
+            whoosh_metrics["page_f1"],
+            whoosh_metrics["page_accuracy"],
+        ],
+        [
+            "RapidFuzz",
+            rp_metrics["method_file_count"],
+            rp_metrics["common_file_count"],
+            rp_metrics["total_pages_all_docs"],
+            rp_metrics["gt_pages_with_keywords_total"],
+            rp_metrics["method_pages_detected"],
+            rp_metrics["page_tp"],
+            rp_metrics["page_fp"],
+            rp_metrics["page_fn"],
+            rp_metrics["page_tn"],
+            rp_metrics["page_precision"],
+            rp_metrics["page_recall"],
+            rp_metrics["page_f1"],
+            rp_metrics["page_accuracy"],
+        ],
+    ]
+
+    return [
+        ["Keyword Level Summary"],
+        keyword_header,
+        *keyword_rows,
+        [],
+        ["Page Level Summary"],
+        page_header,
+        *page_rows,
+    ]
 
 
 def extract_ground_truth_data(
@@ -800,6 +857,35 @@ def dataframe_column_widths(
     return widths
 
 
+def rows_column_widths(
+    rows: SheetRows,
+    max_width: int = 55,
+) -> list[int]:
+    max_columns = max((len(row) for row in rows), default=0)
+    widths: list[int] = []
+    for column_index in range(max_columns):
+        values = [
+            row[column_index]
+            for row in rows
+            if column_index < len(row) and row[column_index] is not None
+        ]
+        max_length = max((len(str(value)) for value in values), default=8)
+        widths.append(min(max(max_length + 2, 10), max_width))
+    return widths
+
+
+def is_section_title_row(row: list[Any]) -> bool:
+    non_empty_values = [value for value in row if str(normalize_excel_value(value)).strip()]
+    return len(non_empty_values) == 1 and len(row) == 1
+
+
+def next_non_empty_row_width(rows: SheetRows, start_index: int) -> int:
+    for row in rows[start_index + 1 :]:
+        if row:
+            return len(row)
+    return max((len(row) for row in rows), default=1)
+
+
 def style_xlsxwriter_sheet(writer: pd.ExcelWriter, sheet_name: str, dataframe: pd.DataFrame) -> None:
     workbook = writer.book
     worksheet = writer.sheets[sheet_name]
@@ -844,6 +930,115 @@ def style_openpyxl_sheet(writer: pd.ExcelWriter, sheet_name: str, dataframe: pd.
         worksheet.column_dimensions[excel_column_name(col_idx)].width = width
 
 
+def write_rows_sheet(
+    writer: pd.ExcelWriter,
+    engine: str,
+    sheet_name: str,
+    rows: SheetRows,
+) -> None:
+    if engine == "xlsxwriter":
+        write_rows_sheet_xlsxwriter(writer, sheet_name, rows)
+    elif engine == "openpyxl":
+        write_rows_sheet_openpyxl(writer, sheet_name, rows)
+
+
+def write_rows_sheet_xlsxwriter(
+    writer: pd.ExcelWriter,
+    sheet_name: str,
+    rows: SheetRows,
+) -> None:
+    workbook = writer.book
+    worksheet = workbook.add_worksheet(sheet_name)
+    writer.sheets[sheet_name] = worksheet
+
+    title_format = workbook.add_format(
+        {
+            "bold": True,
+            "font_color": "#FFFFFF",
+            "bg_color": "#1F4E78",
+            "border": 1,
+        }
+    )
+    header_format = workbook.add_format(
+        {
+            "bold": True,
+            "bg_color": "#D9EAF7",
+            "border": 1,
+            "text_wrap": True,
+            "valign": "top",
+        }
+    )
+    cell_format = workbook.add_format({"border": 1})
+
+    for row_index, row in enumerate(rows):
+        if is_section_title_row(row):
+            merge_width = max(next_non_empty_row_width(rows, row_index), 1)
+            worksheet.merge_range(
+                row_index,
+                0,
+                row_index,
+                merge_width - 1,
+                normalize_excel_value(row[0]),
+                title_format,
+            )
+            continue
+
+        row_format = header_format if row and row[0] == "Method" else cell_format
+        for column_index, value in enumerate(row):
+            worksheet.write(row_index, column_index, normalize_excel_value(value), row_format)
+
+    worksheet.freeze_panes(2, 0)
+    for col_idx, width in enumerate(rows_column_widths(rows)):
+        worksheet.set_column(col_idx, col_idx, width)
+    worksheet.set_zoom(90)
+
+
+def write_rows_sheet_openpyxl(
+    writer: pd.ExcelWriter,
+    sheet_name: str,
+    rows: SheetRows,
+) -> None:
+    from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
+
+    worksheet = writer.book.create_sheet(title=sheet_name)
+    writer.sheets[sheet_name] = worksheet
+
+    title_fill = PatternFill("solid", fgColor="1F4E78")
+    title_font = Font(bold=True, color="FFFFFF")
+    header_fill = PatternFill("solid", fgColor="D9EAF7")
+    header_font = Font(bold=True)
+    border = Border(bottom=Side(style="thin", color="B7C9D6"))
+
+    for row_index, row in enumerate(rows, start=1):
+        if is_section_title_row(row):
+            merge_width = max(next_non_empty_row_width(rows, row_index - 1), 1)
+            worksheet.cell(row=row_index, column=1, value=normalize_excel_value(row[0]))
+            worksheet.merge_cells(
+                start_row=row_index,
+                start_column=1,
+                end_row=row_index,
+                end_column=merge_width,
+            )
+            cell = worksheet.cell(row=row_index, column=1)
+            cell.fill = title_fill
+            cell.font = title_font
+            cell.alignment = Alignment(vertical="center")
+            continue
+
+        is_header = bool(row and row[0] == "Method")
+        for column_index, value in enumerate(row, start=1):
+            cell = worksheet.cell(row=row_index, column=column_index, value=normalize_excel_value(value))
+            if is_header:
+                cell.fill = header_fill
+                cell.font = header_font
+                cell.border = border
+                cell.alignment = Alignment(wrap_text=True, vertical="top")
+
+    worksheet.freeze_panes = "A3"
+    for col_idx, width in enumerate(rows_column_widths(rows), start=1):
+        worksheet.column_dimensions[excel_column_name(col_idx)].width = width
+
+
 def write_dataframe_sheet(
     writer: pd.ExcelWriter,
     engine: str,
@@ -859,45 +1054,53 @@ def write_dataframe_sheet(
 
 def write_excel_report_with_engine(
     output_excel_path: Path,
-    sheets: list[tuple[str, pd.DataFrame]],
+    sheets: list[tuple[str, ReportSheetData]],
     engine: str,
 ) -> None:
     output_excel_path.parent.mkdir(parents=True, exist_ok=True)
     used_names: set[str] = set()
     with pd.ExcelWriter(output_excel_path, engine=engine) as writer:
-        for sheet_name, dataframe in sheets:
+        for sheet_name, sheet_data in sheets:
             safe_sheet_name = clean_sheet_name(sheet_name, used_names)
-            write_dataframe_sheet(writer, engine, safe_sheet_name, dataframe)
+            if isinstance(sheet_data, pd.DataFrame):
+                write_dataframe_sheet(writer, engine, safe_sheet_name, sheet_data)
+            else:
+                write_rows_sheet(writer, engine, safe_sheet_name, sheet_data)
 
 
 def write_excel_report(
     output_excel_path: Path,
     parameter_results_df: pd.DataFrame,
-    best_vs_rp_df: pd.DataFrame | None,
+    best_vs_rp_rows: SheetRows | None,
     gt_data: list[dict[str, Any]],
     detailed_data: list[dict[str, Any]],
 ) -> None:
-    dataframe_sheets: list[tuple[str, pd.DataFrame]] = [
+    report_sheets: list[tuple[str, ReportSheetData]] = [
         ("Parameter Tuning Results", parameter_results_df)
     ]
-    if best_vs_rp_df is not None:
-        dataframe_sheets.append(("Best WHOOSH vs RapidFuzz", best_vs_rp_df))
+    if best_vs_rp_rows is not None:
+        report_sheets.append(("Best WHOOSH vs RapidFuzz", best_vs_rp_rows))
     if gt_data:
-        dataframe_sheets.append(("Ground Truth (LLM)", pd.DataFrame(gt_data)))
+        report_sheets.append(("Ground Truth (LLM)", pd.DataFrame(gt_data)))
     if detailed_data:
-        dataframe_sheets.append(("Detailed Comparison", pd.DataFrame(detailed_data)))
+        report_sheets.append(("Detailed Comparison", pd.DataFrame(detailed_data)))
 
     engine = available_excel_engine()
     if engine is not None:
-        write_excel_report_with_engine(output_excel_path, dataframe_sheets, engine)
+        write_excel_report_with_engine(output_excel_path, report_sheets, engine)
         return
 
     LOGGER.warning(
         "Neither xlsxwriter nor openpyxl is installed; using basic XLSX fallback writer."
     )
     fallback_sheets = [
-        (sheet_name, dataframe_rows(dataframe))
-        for sheet_name, dataframe in dataframe_sheets
+        (
+            sheet_name,
+            dataframe_rows(sheet_data)
+            if isinstance(sheet_data, pd.DataFrame)
+            else sheet_data,
+        )
+        for sheet_name, sheet_data in report_sheets
     ]
     write_xlsx_workbook(output_excel_path, fallback_sheets)
 
@@ -946,7 +1149,7 @@ def generate_report_from_config(config: AppConfig) -> Path:
         gt_output_dir=config.paths.gt_output,
         method_glob=config.report.whoosh_glob,
     )
-    best_vs_rp_df: pd.DataFrame | None = None
+    best_vs_rp_rows: SheetRows | None = None
     detailed_data: list[dict[str, Any]] = []
 
     if config.paths.rp_output is not None and config.paths.rp_output.exists():
@@ -964,7 +1167,7 @@ def generate_report_from_config(config: AppConfig) -> Path:
             preferred_match_field=config.report.method_key_field,
             allowed_bases=best_whoosh_passed_bases,
         ).to_dict()
-        best_vs_rp_df = best_vs_rp_summary_dataframe(whoosh_metrics, rp_metrics)
+        best_vs_rp_rows = best_vs_rp_summary_rows(whoosh_metrics, rp_metrics)
         detailed_data = extract_detailed_comparison_data(
             best_whoosh_output_dir=best_whoosh_output_dir,
             rp_output_dir=config.paths.rp_output,
@@ -981,7 +1184,7 @@ def generate_report_from_config(config: AppConfig) -> Path:
     write_excel_report(
         output_excel_path=output_excel_path,
         parameter_results_df=df,
-        best_vs_rp_df=best_vs_rp_df,
+        best_vs_rp_rows=best_vs_rp_rows,
         gt_data=extract_ground_truth_data(config.paths.gt_output, allowed_bases=best_whoosh_passed_bases),
         detailed_data=detailed_data,
     )

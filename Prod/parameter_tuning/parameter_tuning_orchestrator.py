@@ -351,11 +351,19 @@ def main() -> int:
     results = run_parameter_tuning(config)
 
     failed = sum(1 for result in results if result.status in {"failed", "error"})
+    if failed:
+        LOGGER.error(
+            "Skipping report generation because %s tuning run(s) failed. "
+            "Fix failures before creating a business-facing report.",
+            failed,
+        )
+        return 1
+
     if config.runtime.generate_report_after_tuning:
         from generate_final_comparison_report import generate_report_from_config
 
         generate_report_from_config(config)
-    return 1 if failed else 0
+    return 0
 
 
 if __name__ == "__main__":

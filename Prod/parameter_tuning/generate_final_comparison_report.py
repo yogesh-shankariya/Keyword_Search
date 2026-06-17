@@ -21,6 +21,11 @@ LOGGER = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
 class MethodMetrics:
+    gt_file_count: int = 0
+    method_file_count: int = 0
+    common_file_count: int = 0
+    missing_method_file_count: int = 0
+    extra_method_file_count: int = 0
     files_processed: int = 0
     total_pages_analyzed: int = 0
     gt_total_keywords: int = 0
@@ -45,6 +50,11 @@ class MethodMetrics:
 
     def to_dict(self) -> dict[str, Any]:
         return {
+            "gt_file_count": self.gt_file_count,
+            "method_file_count": self.method_file_count,
+            "common_file_count": self.common_file_count,
+            "missing_method_file_count": self.missing_method_file_count,
+            "extra_method_file_count": self.extra_method_file_count,
             "files_processed": self.files_processed,
             "total_pages_analyzed": self.total_pages_analyzed,
             "gt_total_keywords": self.gt_total_keywords,
@@ -125,13 +135,21 @@ def build_file_mapping(directory: Path, glob_pattern: str) -> dict[str, Path]:
     if not directory.exists():
         return mapping
 
-    for path in directory.glob(glob_pattern):
+    for path in directory.rglob(glob_pattern):
         base_name = get_base_filename(path.name)
         try:
             declared_base_name = extract_declared_base_filename(read_json(path))
         except Exception:
             declared_base_name = None
-        mapping[declared_base_name or base_name] = path
+        comparable_base_name = declared_base_name or base_name
+        if comparable_base_name in mapping:
+            LOGGER.warning(
+                "Duplicate comparable file base %s; using %s instead of %s",
+                comparable_base_name,
+                path,
+                mapping[comparable_base_name],
+            )
+        mapping[comparable_base_name] = path
     return mapping
 
 
@@ -267,9 +285,32 @@ def compare_output_dir_vs_gt(
     gt_files = build_file_mapping(gt_output_dir, "*.json")
     method_files = build_file_mapping(method_output_dir, method_glob)
     common_bases = set(gt_files) & set(method_files)
+    missing_method_bases = set(gt_files) - set(method_files)
+    extra_method_bases = set(method_files) - set(gt_files)
     if not common_bases:
         LOGGER.warning("No common files between %s and GT", method_output_dir)
-        return MethodMetrics()
+        return MethodMetrics(
+            gt_file_count=len(gt_files),
+            method_file_count=len(method_files),
+            common_file_count=0,
+            missing_method_file_count=len(missing_method_bases),
+            extra_method_file_count=len(extra_method_bases),
+        )
+
+    if missing_method_bases:
+        LOGGER.warning(
+            "%s GT file(s) are missing from %s; examples: %s",
+            len(missing_method_bases),
+            method_output_dir,
+            ", ".join(sorted(missing_method_bases)[:5]),
+        )
+    if extra_method_bases:
+        LOGGER.warning(
+            "%s method file(s) in %s do not have GT matches; examples: %s",
+            len(extra_method_bases),
+            method_output_dir,
+            ", ".join(sorted(extra_method_bases)[:5]),
+        )
 
     total_kw_tp = 0
     total_kw_fp = 0
@@ -329,6 +370,11 @@ def compare_output_dir_vs_gt(
     )
 
     return MethodMetrics(
+        gt_file_count=len(gt_files),
+        method_file_count=len(method_files),
+        common_file_count=len(common_bases),
+        missing_method_file_count=len(missing_method_bases),
+        extra_method_file_count=len(extra_method_bases),
         files_processed=files_processed,
         total_pages_analyzed=total_pages_analyzed,
         gt_total_keywords=total_kw_tp + total_kw_fn,
@@ -370,10 +416,16 @@ def load_successful_runs(execution_summary_path: Path) -> list[dict[str, Any]]:
 
 def run_to_row(run: dict[str, Any], metrics: dict[str, Any]) -> dict[str, Any]:
     parameters = run.get("parameters") if isinstance(run.get("parameters"), Mapping) else {}
+    comparison_status = (
+        "complete"
+        if metrics.get("missing_method_file_count", 0) == 0 and metrics.get("common_file_count", 0) > 0
+        else "incomplete_file_match"
+    )
     return {
         "run_id": run.get("run_id"),
         "run_name": run.get("run_name"),
         "status": run.get("status"),
+        "comparison_status": comparison_status,
         "slop": parameters.get("slop"),
         "edit_distance": parameters.get("edit_distance"),
         "min_fuzzy_term_length": parameters.get("min_fuzzy_term_length"),
@@ -384,6 +436,88 @@ def run_to_row(run: dict[str, Any], metrics: dict[str, Any]) -> dict[str, Any]:
         "execution_time_sec": round(float(run.get("duration_seconds", 0.0) or 0.0), 2),
         **metrics,
     }
+
+
+def best_vs_rp_summary_dataframe(
+    whoosh_metrics: dict[str, Any],
+    rp_metrics: dict[str, Any],
+) -> pd.DataFrame:
+    return pd.DataFrame(
+        [
+            {
+                "Method": "Ground Truth",
+                "File Count": whoosh_metrics["gt_file_count"],
+                "Files Compared": whoosh_metrics["common_file_count"],
+                "GT Total Keywords": whoosh_metrics["gt_total_keywords"],
+                "Keywords Detected": whoosh_metrics["gt_total_keywords"],
+                "Keyword TP": "",
+                "Keyword FP": "",
+                "Keyword FN": "",
+                "Keyword Precision (%)": "",
+                "Keyword Recall (%)": "",
+                "Keyword F1": "",
+                "Total Pages": whoosh_metrics["total_pages_all_docs"],
+                "GT Pages With Keywords": whoosh_metrics["gt_pages_with_keywords_total"],
+                "Pages Detected": whoosh_metrics["gt_pages_with_keywords_total"],
+                "Page TP": "",
+                "Page FP": "",
+                "Page FN": "",
+                "Page TN": "",
+                "Page Precision (%)": "",
+                "Page Recall (%)": "",
+                "Page F1": "",
+                "Page Accuracy (%)": "",
+            },
+            {
+                "Method": "WHOOSH Best",
+                "File Count": whoosh_metrics["method_file_count"],
+                "Files Compared": whoosh_metrics["common_file_count"],
+                "GT Total Keywords": whoosh_metrics["gt_total_keywords"],
+                "Keywords Detected": whoosh_metrics["method_total_detected"],
+                "Keyword TP": whoosh_metrics["kw_tp"],
+                "Keyword FP": whoosh_metrics["kw_fp"],
+                "Keyword FN": whoosh_metrics["kw_fn"],
+                "Keyword Precision (%)": whoosh_metrics["kw_precision"],
+                "Keyword Recall (%)": whoosh_metrics["kw_recall"],
+                "Keyword F1": whoosh_metrics["kw_f1"],
+                "Total Pages": whoosh_metrics["total_pages_all_docs"],
+                "GT Pages With Keywords": whoosh_metrics["gt_pages_with_keywords_total"],
+                "Pages Detected": whoosh_metrics["method_pages_detected"],
+                "Page TP": whoosh_metrics["page_tp"],
+                "Page FP": whoosh_metrics["page_fp"],
+                "Page FN": whoosh_metrics["page_fn"],
+                "Page TN": whoosh_metrics["page_tn"],
+                "Page Precision (%)": whoosh_metrics["page_precision"],
+                "Page Recall (%)": whoosh_metrics["page_recall"],
+                "Page F1": whoosh_metrics["page_f1"],
+                "Page Accuracy (%)": whoosh_metrics["page_accuracy"],
+            },
+            {
+                "Method": "RapidFuzz",
+                "File Count": rp_metrics["method_file_count"],
+                "Files Compared": rp_metrics["common_file_count"],
+                "GT Total Keywords": rp_metrics["gt_total_keywords"],
+                "Keywords Detected": rp_metrics["method_total_detected"],
+                "Keyword TP": rp_metrics["kw_tp"],
+                "Keyword FP": rp_metrics["kw_fp"],
+                "Keyword FN": rp_metrics["kw_fn"],
+                "Keyword Precision (%)": rp_metrics["kw_precision"],
+                "Keyword Recall (%)": rp_metrics["kw_recall"],
+                "Keyword F1": rp_metrics["kw_f1"],
+                "Total Pages": rp_metrics["total_pages_all_docs"],
+                "GT Pages With Keywords": rp_metrics["gt_pages_with_keywords_total"],
+                "Pages Detected": rp_metrics["method_pages_detected"],
+                "Page TP": rp_metrics["page_tp"],
+                "Page FP": rp_metrics["page_fp"],
+                "Page FN": rp_metrics["page_fn"],
+                "Page TN": rp_metrics["page_tn"],
+                "Page Precision (%)": rp_metrics["page_precision"],
+                "Page Recall (%)": rp_metrics["page_recall"],
+                "Page F1": rp_metrics["page_f1"],
+                "Page Accuracy (%)": rp_metrics["page_accuracy"],
+            },
+        ]
+    )
 
 
 def extract_ground_truth_data(gt_output_dir: Path) -> list[dict[str, Any]]:
@@ -797,13 +931,7 @@ def generate_report_from_config(config: AppConfig) -> Path:
             method_glob=config.report.rp_glob,
             preferred_match_field=config.report.method_key_field,
         ).to_dict()
-        best_vs_rp_df = pd.DataFrame(
-            [
-                {"method": "Ground Truth", **{key: whoosh_metrics[key] for key in whoosh_metrics}},
-                {"method": "WHOOSH Best", **whoosh_metrics},
-                {"method": "RapidFuzz", **rp_metrics},
-            ]
-        )
+        best_vs_rp_df = best_vs_rp_summary_dataframe(whoosh_metrics, rp_metrics)
         detailed_data = extract_detailed_comparison_data(
             best_whoosh_output_dir=Path(str(best_run["output_dir"])),
             rp_output_dir=config.paths.rp_output,

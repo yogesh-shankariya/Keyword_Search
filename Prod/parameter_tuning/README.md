@@ -44,13 +44,15 @@ python Prod/parameter_tuning/generate_final_comparison_report.py
 ## Path Rule
 
 Use absolute paths in `parameter_tuning.yaml`.
+For Windows paths, prefer single quotes so backslashes are read literally.
+Python-style raw strings such as `r"C:\Users\name\input\ocr"` are also accepted.
 
 Example:
 
 ```yaml
 paths:
-  ocr_json: "C:\\Users\\name\\input\\ocr"
-  keywords_json: "C:\\Users\\name\\input\\keywords.json"
+  ocr_json: 'C:\Users\name\input\ocr'
+  keywords_json: 'C:\Users\name\input\keywords.json'
 ```
 
 ## Report

@@ -304,7 +304,7 @@ def create_or_replace_index(index_dir, keep_stopwords=False, stem_words=False):
         analyzer = (
             StemmingAnalyzer(minsize=1, stoplist=None)
             if keep_stopwords
-            else StemmingAnalyzer()
+            else StemmingAnalyzer(minsize=1)
         )
         content_field = TEXT(stored=True, phrase=True, analyzer=analyzer)
     elif keep_stopwords:

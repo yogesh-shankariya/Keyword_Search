@@ -74,14 +74,28 @@ def _require_path(data: dict[str, Any], key: str) -> Path:
     value = data.get(key)
     if value is None or str(value).strip() == "":
         raise ValueError(f"YAML path '{key}' is required")
-    return Path(str(value))
+    return Path(_clean_path_string(value))
 
 
 def _optional_path(data: dict[str, Any], key: str) -> Path | None:
     value = data.get(key)
     if value is None or str(value).strip() == "":
         return None
-    return Path(str(value))
+    return Path(_clean_path_string(value))
+
+
+def _clean_path_string(value: Any) -> str:
+    """
+    Normalize path values pasted into YAML.
+
+    Supports normal YAML strings and Python-style raw string notation such as:
+      r"C:\\Users\\name\\folder"
+      r'C:\\Users\\name\\folder'
+    """
+    text = str(value).strip()
+    if len(text) >= 3 and text[0] in {"r", "R"} and text[1] in {"'", '"'} and text[-1] == text[1]:
+        return text[2:-1]
+    return text
 
 
 def _list_of_ints(data: dict[str, Any], key: str) -> list[int]:

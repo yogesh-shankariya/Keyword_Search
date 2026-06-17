@@ -1,0 +1,16 @@
+{
+  "CONFIG_SLOP": [1, 2, 3, 4, 5],
+  "CONFIG_EDIT_DISTANCE": [1, 2],
+  "CONFIG_MIN_FUZZY_TERM_LENGTH": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+  "CONFIG_KEEP_STOPWORDS": [false, true],
+  "CONFIG_STEM_WORDS": true,
+  "FIXED_PATHS": {
+    "ocr_json": "C:\\Elevance\\LiveProjects\\cpass_200_charts",
+    "keywords_json": "C:\\Elevance\\LiveProjects\\WHOOSH_VS_RP_01_06_2026\\KEYWORD_SEARCH_V2\\UA\\WHOOSH\\Input\\Keywords\\urgent_appeal_keywords_single.json",
+    "gt_output": "C:\\Elevance\\LiveProjects\\WHOOSH_VS_RP_01_06_2026\\KEYWORD_SEARCH_V2\\UA\\GT\\Output4",
+    "rp_output": "C:\\Elevance\\LiveProjects\\WHOOSH_VS_RP_01_06_2026\\KEYWORD_SEARCH_V2\\UA\\RP\\Output2",
+    "base_output_dir": "C:\\Elevance\\LiveProjects\\WHOOSH_VS_RP_01_06_2026\\KEYWORD_SEARCH_V2\\UA\\WHOOSH\\parameter_tuning\\outputs",
+    "base_logs_dir": "C:\\Elevance\\LiveProjects\\WHOOSH_VS_RP_01_06_2026\\KEYWORD_SEARCH_V2\\UA\\WHOOSH\\parameter_tuning\\logs",
+    "base_index_dir": "C:\\Elevance\\LiveProjects\\WHOOSH_VS_RP_01_06_2026\\KEYWORD_SEARCH_V2\\UA\\WHOOSH\\parameter_tuning\\index"
+  }
+}

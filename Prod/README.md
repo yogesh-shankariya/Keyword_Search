@@ -258,7 +258,7 @@ python whoosh_encounter_json_keyword_search.py \
   --edit-distance 1
 ```
 
-If `--stem-words` and `--keep-stopwords` are both passed, `--stem-words` takes precedence and Whoosh's built-in `StemmingAnalyzer()` is used.
+If `--stem-words` and `--keep-stopwords` are both passed, the script uses `StemmingAnalyzer(minsize=1, stoplist=None)` so stop words are kept and stemmed.
 
 `--min-fuzzy-term-length 5`
 

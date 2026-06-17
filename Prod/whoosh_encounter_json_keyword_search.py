@@ -268,6 +268,8 @@ def extract_pages_from_ocr_json(ocr_json, include_cover=False):
 
 def analyzer_mode(keep_stopwords=False, stem_words=False):
     if stem_words:
+        if keep_stopwords:
+            return "stemming_keep_stopwords"
         return "stemming"
 
     if keep_stopwords:
@@ -291,7 +293,7 @@ def create_or_replace_index(index_dir, keep_stopwords=False, stem_words=False):
     Stemming mode:
       - pass stem_words=True
       - Whoosh StemmingAnalyzer is used
-      - if keep_stopwords is also true, stemming takes precedence
+      - if keep_stopwords is also true, stemming is used without a stoplist
     """
     if os.path.exists(index_dir):
         shutil.rmtree(index_dir)
@@ -299,7 +301,12 @@ def create_or_replace_index(index_dir, keep_stopwords=False, stem_words=False):
     os.makedirs(index_dir, exist_ok=True)
 
     if stem_words:
-        content_field = TEXT(stored=True, phrase=True, analyzer=StemmingAnalyzer())
+        analyzer = (
+            StemmingAnalyzer(minsize=1, stoplist=None)
+            if keep_stopwords
+            else StemmingAnalyzer()
+        )
+        content_field = TEXT(stored=True, phrase=True, analyzer=analyzer)
     elif keep_stopwords:
         analyzer = RegexTokenizer() | LowercaseFilter()
         content_field = TEXT(stored=True, phrase=True, analyzer=analyzer)
@@ -982,7 +989,7 @@ def parse_args():
         default=CONFIG_STEM_WORDS,
         help=(
             "Stem OCR and keyword terms before fuzzy matching. "
-            "If used with --keep-stopwords, stemming takes precedence."
+            "If used with --keep-stopwords, stop words are kept and stemmed."
         ),
     )
 

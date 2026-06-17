@@ -279,17 +279,45 @@ def print_configuration(config: AppConfig, total_runs: int, runs_to_execute: int
     print()
 
 
-def print_progress(completed_count: int, total_runs: int, result: RunResult, elapsed_seconds: float) -> None:
+def format_duration(seconds: float) -> str:
+    if seconds < 60:
+        return f"{seconds:.0f}s"
+    minutes, remaining_seconds = divmod(int(seconds), 60)
+    if minutes < 60:
+        return f"{minutes}m {remaining_seconds}s"
+    hours, remaining_minutes = divmod(minutes, 60)
+    return f"{hours}h {remaining_minutes}m"
+
+
+def progress_bar(completed_count: int, total_runs: int, width: int = 28) -> str:
+    if total_runs <= 0:
+        return "[" + ("#" * width) + "]"
+    filled = int(round(width * completed_count / total_runs))
+    filled = max(0, min(width, filled))
+    return "[" + ("#" * filled) + ("-" * (width - filled)) + "]"
+
+
+def print_progress(
+    completed_count: int,
+    total_runs: int,
+    result: RunResult,
+    elapsed_seconds: float,
+    success_count: int,
+    failed_count: int,
+) -> None:
     progress_pct = (completed_count / total_runs) * 100 if total_runs else 100.0
     avg_time_per_run = elapsed_seconds / completed_count if completed_count else 0.0
     remaining_runs = total_runs - completed_count
     eta_seconds = remaining_runs * avg_time_per_run
-    status_symbol = "OK" if result.status in {"success", "skipped"} else "FAIL"
+    status_text = "OK" if result.status in {"success", "skipped"} else "FAIL"
     print(
-        f"{status_symbol} [{completed_count}/{total_runs}] ({progress_pct:.1f}%) | "
-        f"Run {result.run_id}: {result.status.upper()} | "
-        f"Duration: {result.duration_seconds:.1f}s | "
-        f"ETA: {eta_seconds / 60:.1f}m"
+        f"{progress_bar(completed_count, total_runs)} {progress_pct:6.2f}% | "
+        f"Completed {completed_count}/{total_runs} | "
+        f"Success {success_count} | Failed {failed_count} | "
+        f"Last run {result.run_id:03d} {status_text} "
+        f"({result.files_processed} file(s), {format_duration(result.duration_seconds)}) | "
+        f"Elapsed {format_duration(elapsed_seconds)} | ETA {format_duration(eta_seconds)}",
+        flush=True,
     )
 
 
@@ -325,11 +353,15 @@ def run_parameter_tuning(config: AppConfig) -> list[RunResult]:
             for future in as_completed(futures):
                 result = future.result()
                 results.append(result)
+                success_count = sum(1 for item in results if item.status in {"success", "skipped"})
+                failed_count = sum(1 for item in results if item.status in {"failed", "error"})
                 print_progress(
                     completed_count=len(results),
                     total_runs=total_runs,
                     result=result,
                     elapsed_seconds=perf_counter() - start_time,
+                    success_count=success_count,
+                    failed_count=failed_count,
                 )
 
     total_wall_seconds = perf_counter() - start_time

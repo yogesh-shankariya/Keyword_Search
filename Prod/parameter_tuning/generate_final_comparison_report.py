@@ -201,15 +201,18 @@ def load_gt_keywords(filepath: Path) -> tuple[dict[int, list[dict[str, str]]], i
             continue
         max_seen_page = max(max_seen_page, page_num)
         keywords_raw = page_info.get("keywords_detected", []) or []
-        seen: set[str] = set()
-        deduplicated: list[dict[str, str]] = []
+        page_keywords = result.setdefault(page_num, [])
+        seen = {
+            normalize_keyword(item.get("keyword", ""))
+            for item in page_keywords
+            if normalize_keyword(item.get("keyword", ""))
+        }
         for kw_item in keywords_raw:
             keyword, reason = extract_keyword_from_gt_item(kw_item)
             normalized = normalize_keyword(keyword)
             if normalized and normalized not in seen:
                 seen.add(normalized)
-                deduplicated.append({"keyword": keyword, "reason": reason})
-        result[page_num] = deduplicated
+                page_keywords.append({"keyword": keyword, "reason": reason})
 
     if total_pages <= 0:
         total_pages = max_seen_page
@@ -284,7 +287,13 @@ def load_method_keywords(filepath: Path, preferred_match_field: str) -> dict[int
         page_num = safe_int(page_info.get("page_number"), 0)
         if page_num <= 0:
             continue
-        result[page_num] = extract_method_keywords_from_page(page_info, preferred_match_field)
+        page_keywords = result.setdefault(page_num, [])
+        seen = {normalize_keyword(keyword) for keyword in page_keywords if normalize_keyword(keyword)}
+        for keyword in extract_method_keywords_from_page(page_info, preferred_match_field):
+            normalized = normalize_keyword(keyword)
+            if normalized and normalized not in seen:
+                seen.add(normalized)
+                page_keywords.append(keyword)
     return result
 
 

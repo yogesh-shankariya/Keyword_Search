@@ -199,7 +199,6 @@ def execute_run(run_config: RunConfig) -> RunResult:
             settings=run_config.settings,
         )
         duration = perf_counter() - start_time
-        output_files = list(run_config.output_dir.glob(run_config.output_glob))
         failed_count = int(batch_summary.get("failed_count", 0) or 0)
         success_count = int(batch_summary.get("success_count", 0) or 0)
         if failed_count:
@@ -209,7 +208,7 @@ def execute_run(run_config: RunConfig) -> RunResult:
                 run_name=run_config.run_name,
                 status=status,
                 duration_seconds=duration,
-                files_processed=len(output_files),
+                files_processed=success_count,
                 output_dir=str(run_config.output_dir),
                 logs_dir=str(run_config.logs_dir),
                 index_dir=str(run_config.index_dir),
@@ -225,7 +224,7 @@ def execute_run(run_config: RunConfig) -> RunResult:
             run_name=run_config.run_name,
             status="success",
             duration_seconds=duration,
-            files_processed=len(output_files),
+            files_processed=success_count,
             output_dir=str(run_config.output_dir),
             logs_dir=str(run_config.logs_dir),
             index_dir=str(run_config.index_dir),

@@ -1,10 +1,8 @@
 from __future__ import annotations
 
 import json
-import os
 import re
 import shutil
-import tempfile
 from collections import OrderedDict
 from dataclasses import dataclass
 from pathlib import Path
@@ -13,6 +11,7 @@ from typing import Any
 try:
     from whoosh import index, query
     from whoosh.analysis import LowercaseFilter, RegexTokenizer, StemmingAnalyzer
+    from whoosh.filedb.filestore import RamStorage
     from whoosh.fields import ID, NUMERIC, STORED, Schema, TEXT
     from whoosh.query import spans
 except ModuleNotFoundError as exc:
@@ -141,12 +140,7 @@ def analyzer_mode(keep_stopwords: bool, stem_words: bool) -> str:
     return "default"
 
 
-def create_or_replace_index(index_dir: Path, keep_stopwords: bool, stem_words: bool):
-    index_dir = Path(index_dir)
-    if index_dir.exists():
-        shutil.rmtree(index_dir)
-    index_dir.mkdir(parents=True, exist_ok=True)
-
+def build_schema(keep_stopwords: bool, stem_words: bool) -> Schema:
     if stem_words:
         analyzer = (
             StemmingAnalyzer(minsize=1, stoplist=None)
@@ -160,13 +154,24 @@ def create_or_replace_index(index_dir: Path, keep_stopwords: bool, stem_words: b
     else:
         content_field = TEXT(stored=True, phrase=True)
 
-    schema = Schema(
+    return Schema(
         doc_id=ID(stored=True, unique=True),
         encounter_id=ID(stored=True),
         file_path=STORED,
         page_number=NUMERIC(stored=True),
         content=content_field,
     )
+
+
+def create_or_replace_index(index_dir: Path | None, keep_stopwords: bool, stem_words: bool):
+    schema = build_schema(keep_stopwords=keep_stopwords, stem_words=stem_words)
+    if index_dir is None:
+        return RamStorage().create_index(schema)
+
+    index_dir = Path(index_dir)
+    if index_dir.exists():
+        shutil.rmtree(index_dir)
+    index_dir.mkdir(parents=True, exist_ok=True)
     return index.create_in(index_dir, schema)
 
 
@@ -248,55 +253,45 @@ def run_keyword_detection(
     page_records = extract_pages_from_ocr_json(ocr_json)
     keyword_records = flatten_keyword_json(keywords_json)
 
-    temp_dir = None
-    if index_dir is None:
-        temp_dir = tempfile.mkdtemp(prefix="whoosh_demo_index_")
-        index_dir = Path(temp_dir)
+    ix = create_or_replace_index(
+        index_dir,
+        keep_stopwords=settings.keep_stopwords,
+        stem_words=settings.stem_words,
+    )
+    index_pages(ix, page_records)
 
-    try:
-        ix = create_or_replace_index(
-            Path(index_dir),
-            keep_stopwords=settings.keep_stopwords,
-            stem_words=settings.stem_words,
-        )
-        index_pages(ix, page_records)
+    output_by_doc_id: OrderedDict[str, dict[str, Any]] = OrderedDict()
+    for page in page_records:
+        record: dict[str, Any] = {
+            "page_number": int(page["page_number"]),
+            "encounter_id": str(page["encounter_id"]),
+            "matches": [],
+        }
+        if settings.include_file_path:
+            record["file_path"] = page.get("file_path", "")
+        output_by_doc_id[page["doc_id"]] = record
 
-        output_by_doc_id: OrderedDict[str, dict[str, Any]] = OrderedDict()
-        for page in page_records:
-            record: dict[str, Any] = {
-                "page_number": int(page["page_number"]),
-                "encounter_id": str(page["encounter_id"]),
-                "matches": [],
-            }
-            if settings.include_file_path:
-                record["file_path"] = page.get("file_path", "")
-            output_by_doc_id[page["doc_id"]] = record
+    with ix.searcher() as searcher:
+        ixreader = searcher.reader()
+        for keyword_record in keyword_records:
+            q = build_fuzzy_unordered_near_all_query(
+                schema=ix.schema,
+                ixreader=ixreader,
+                fieldname="content",
+                keyword=keyword_record["variant"],
+                settings=settings,
+            )
+            for hit in searcher.search(q, limit=None):
+                match_record = {
+                    "group": keyword_record["group"],
+                    "variant": keyword_record["variant"],
+                }
+                matches = output_by_doc_id[hit["doc_id"]]["matches"]
+                if match_record not in matches:
+                    matches.append(match_record)
 
-        with ix.searcher() as searcher:
-            ixreader = searcher.reader()
-            for keyword_record in keyword_records:
-                q = build_fuzzy_unordered_near_all_query(
-                    schema=ix.schema,
-                    ixreader=ixreader,
-                    fieldname="content",
-                    keyword=keyword_record["variant"],
-                    settings=settings,
-                )
-                for hit in searcher.search(q, limit=None):
-                    match_record = {
-                        "group": keyword_record["group"],
-                        "variant": keyword_record["variant"],
-                    }
-                    matches = output_by_doc_id[hit["doc_id"]]["matches"]
-                    if match_record not in matches:
-                        matches.append(match_record)
-
-        return [
-            record
-            for record in output_by_doc_id.values()
-            if not settings.matched_only or record["matches"]
-        ]
-    finally:
-        if temp_dir is not None and os.path.exists(temp_dir):
-            shutil.rmtree(temp_dir)
-
+    return [
+        record
+        for record in output_by_doc_id.values()
+        if not settings.matched_only or record["matches"]
+    ]

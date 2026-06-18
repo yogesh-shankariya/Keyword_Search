@@ -1,0 +1,6 @@
+Whoosh
+pandas
+PyYAML
+notebook
+ipython
+

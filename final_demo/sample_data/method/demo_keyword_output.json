@@ -1,0 +1,32 @@
+[
+  {
+    "page_number": 1,
+    "encounter_id": 1,
+    "matches": [],
+    "file_path": ""
+  },
+  {
+    "page_number": 2,
+    "encounter_id": 2,
+    "matches": [],
+    "file_path": ""
+  },
+  {
+    "page_number": 3,
+    "encounter_id": 2,
+    "matches": [
+      {
+        "group": "emergent",
+        "variant": "Emergency"
+      }
+    ],
+    "file_path": ""
+  },
+  {
+    "page_number": 4,
+    "encounter_id": 2,
+    "matches": [],
+    "file_path": ""
+  }
+]
+

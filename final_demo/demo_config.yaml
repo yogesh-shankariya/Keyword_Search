@@ -1,0 +1,18 @@
+paths:
+  sample_ocr: sample_data/ocr/demo_ocr.json
+  sample_keywords: sample_data/keywords/demo_keywords.json
+  sample_gt: sample_data/gt/demo.json
+  sample_method_output: sample_data/method/demo_keyword_output.json
+  output_dir: outputs
+
+parameters:
+  slop: [1, 2, 3, 4, 5]
+  edit_distance: [0, 1, 2]
+  min_fuzzy_term_length: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+  keep_stopwords: [false, true]
+  stem_words: true
+  prefixlength: 0
+
+report:
+  method_key_field: group
+

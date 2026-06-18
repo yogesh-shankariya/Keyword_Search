@@ -1,0 +1,29 @@
+{
+  "file_name": "demo.json",
+  "total_pages": 6,
+  "pages_with_keywords": [
+    {
+      "page_number": 3,
+      "keywords_detected": [
+        {
+          "keyword": "emergent",
+          "reason": "Found Emergency variant in text"
+        }
+      ]
+    },
+    {
+      "page_number": 5,
+      "keywords_detected": [
+        {
+          "keyword": "immediate",
+          "reason": "Found immediately variant in text"
+        }
+      ]
+    },
+    {
+      "page_number": 6,
+      "keywords_detected": []
+    }
+  ]
+}
+

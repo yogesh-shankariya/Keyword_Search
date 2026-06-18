@@ -1,0 +1,10 @@
+{
+  "encounters": [
+    {
+      "id": "demo_encounter",
+      "file_path": "demo.txt",
+      "text": "<ocr_service_page_start>1<ocr_service_page_start>\nContact Type: EMERGENCY\n<ocr_service_page_start>2<ocr_service_page_start>\nRoutine follow up visit\n<ocr_service_page_start>3<ocr_service_page_start>\nThe note was signed by physician\n<ocr_service_page_start>4<ocr_service_page_start>\nThe note was signed electronically by physician\n<ocr_service_page_start>5<ocr_service_page_start>\nPhysican note signed"
+    }
+  ]
+}
+
